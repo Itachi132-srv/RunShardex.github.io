@@ -42,36 +42,23 @@ canvas{width:100%;height:100%;display:block}
 .panel-head h2{font-family:Orbitron;font-size:22px;margin:0}
 .close-btn{border:1px solid #ffffff20;background:#ffffff0c;color:white;border-radius:10px;padding:9px 13px}
 .grid-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px}
-
-/* COOL SKIN CARDS UI */
 .item{
  border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);
  border-radius:16px;padding:16px;text-align:left;min-height:165px;
  display:flex;flex-direction:column;justify-content:space-between;
- transition:all .2s ease;
 }
-.item:hover{border-color:#9b5cff;transform:translateY(-3px);box-shadow:0 8px 25px rgba(155,92,255,0.2)}
-.skin-preview{height:52px;width:52px;border-radius:14px;margin-bottom:8px;border:2px solid #ffffff55;box-shadow:0 0 20px currentColor}
-.item h3{font-family:Orbitron;font-size:13px;margin:0 0 4px;letter-spacing:0.5px}
+.skin-preview{height:48px;width:48px;border-radius:12px;margin-bottom:8px;border:2px solid #ffffff55;box-shadow:0 0 20px currentColor}
+.item h3{font-size:13px;margin:0 0 4px;font-family:Orbitron}
+.price-text{font-family:Orbitron;font-size:11px;font-weight:700;color:#00f2fe;text-shadow:0 0 8px rgba(0,242,254,0.4);margin-bottom:8px}
 
-/* COOL PRICE & RARITY BADGES */
-.price-text{font-family:Orbitron;font-size:11px;font-weight:700;color:#00f2fe;text-shadow:0 0 8px rgba(0,242,254,0.4);margin-bottom:10px}
+/* RARITY BADGES */
 .rarity-tag{font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;display:inline-block;margin-bottom:6px;border:1px solid}
 .rarity-common{color:#a1a1aa;border-color:#a1a1aa44;background:#a1a1aa11}
 .rarity-uncommon{color:#4ade80;border-color:#4ade8044;background:#4ade8011}
 .rarity-rare{color:#38bdf8;border-color:#38bdf844;background:#38bdf811}
 .rarity-epic{color:#c084fc;border-color:#c084fc44;background:#c084fc11}
 .rarity-legendary{color:#facc15;border-color:#facc1555;background:#facc1511;text-shadow:0 0 6px #facc1566}
-.rarity-secret{color:#ff007f;border-color:#ff007f66;background:#ff007f15;text-shadow:0 0 8px #ff007f88}
-
-/* RAINBOW ANIMATION FOR LIMITED TEXT */
-@keyframes rainbowText {
- 0%{color:#ff007f;text-shadow:0 0 8px #ff007f}
- 33%{color:#00f2fe;text-shadow:0 0 8px #00f2fe}
- 66%{color:#facc15;text-shadow:0 0 8px #facc15}
- 100%{color:#ff007f;text-shadow:0 0 8px #ff007f}
-}
-.limited-rainbow{animation:rainbowText 3s infinite linear;font-weight:900;letter-spacing:1px;font-family:Orbitron}
+.rarity-secret{color:#00f2fe;border-color:#00f2fe88;background:#00f2fe15;text-shadow:0 0 10px #00f2feaa;font-weight:900}
 
 .item button{width:100%;padding:9px;border:0;border-radius:8px;background:#7540c6;color:white;font-size:11px;font-weight:800}
 .locked{font-size:10px;color:#f87171;text-align:center;padding:6px;background:rgba(248,113,113,0.1);border-radius:6px;border:1px solid rgba(248,113,113,0.2)}
@@ -252,8 +239,12 @@ const defaultSkins=[
  {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:5000,rarity:"legendary"},
  {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true,rarity:"secret"}
 ];
-
-const CUSTOM_SKIN_CODES = [];
+// ADD YOUR OWN REDEEM SKIN HERE:
+// { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" }
+// The skin body, slime trail and laser will automatically use this color.
+const CUSTOM_SKIN_CODES = [
+ // { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" },
+];
 
 const seasons=[
  {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d",rarity:"common"},
@@ -309,6 +300,7 @@ function toast(msg){
  toast.timer=setTimeout(()=>$("toast").style.display="none",1800);
 }
 
+// Mobile control settings are saved separately so you can edit them any time.
 const defaultControlLayout={
  left:{x:8,y:83}, right:{x:18,y:83},
  jump:{x:81,y:83}, attack:{x:92,y:83}
@@ -372,7 +364,7 @@ function renderSkins(){
   const selected=data.selected===s.id;
   const locked=(s.id==="secretblue"&&!data.redeemed)||(!!s.customCode&&!data.redeemedCodes.includes(s.customCode));
   const div=document.createElement("div");div.className="item";
-  
+
   let rarityClass="rarity-common";
   if(s.rarity==="uncommon") rarityClass="rarity-uncommon";
   if(s.rarity==="rare") rarityClass="rarity-rare";
@@ -380,14 +372,14 @@ function renderSkins(){
   if(s.rarity==="legendary") rarityClass="rarity-legendary";
   if(s.rarity==="secret") rarityClass="rarity-secret";
 
-  let priceText = s.secret ? '<span class="limited-rainbow">LIMITED</span>' : s.price===0 ? 'FREE' : s.price.toLocaleString() + ' SHARDS';
+  let priceText = s.secret ? '<span style="color:#00f2fe; text-shadow:0 0 8px #00f2fe">NEON BLUE</span>' : s.price===0 ? 'FREE' : s.price.toLocaleString() + ' SHARDS';
 
   div.innerHTML=`
    <div>
      <span class="rarity-tag ${rarityClass}">${(s.rarity || 'common').toUpperCase()}</span>
      <div class="skin-preview" style="background:${s.color};color:${s.color}"></div>
      <h3>${s.name}</h3>
-     <div class="price-text">${locked ? '<span class="limited-rainbow">LIMITED CODE</span>' : priceText}</div>
+     <div class="price-text">${locked ? '<span style="color:#00f2fe; text-shadow:0 0 8px #00f2fe">NEON BLUE</span>' : priceText}</div>
    </div>
    ${locked?'<div class="locked">LOCKED</div>':
    `<button>${selected?"EQUIPPED":owned?"EQUIP":"BUY"}</button>`}`;
@@ -408,7 +400,7 @@ function renderSeasons(){
  seasons.forEach(s=>{
   const owned=data.seasons.includes(s.id),selected=data.season===s.id;
   const div=document.createElement("div");div.className="item";
-  
+
   let rarityClass="rarity-common";
   if(s.rarity==="uncommon") rarityClass="rarity-uncommon";
   if(s.rarity==="rare") rarityClass="rarity-rare";
@@ -782,6 +774,10 @@ function update(){
   if(Math.random()<.8)enemies.push(makeEnemy(x,y,width));
   if(frame%8===0)powers.push({x:x+width/2,y:y-55,type:Math.random()<.5?"oneHit":"shield",collected:false});
  }
+ platforms=platforms.filter(p=>p.x+p.w>camera-300);
+ crystals=crystals.filter(c=>c.x>camera-300&&!c.collected);
+ enemies=enemies.filter(e=>e.x>camera-300&&e.alive);
+ powers=powers.filter(p=>p.x>camera-300&&!p.collected);
 }
 
 function draw(){
@@ -835,17 +831,14 @@ function draw(){
  }
 
  const skin=[...defaultSkins,...getCustomSkins()].find(s=>s.id===data.selected)||defaultSkins[0];
- ctx.save();
- ctx.translate(player.x+player.w/2, player.y+player.h/2);
  ctx.fillStyle=skin.color;
- ctx.fillRect(-player.w/2, -player.h/2, player.w, player.h);
- 
+ ctx.fillRect(player.x,player.y,player.w,player.h);
+
  ctx.fillStyle="#fff";
- const eyeX=player.facing>0?4:-10;
- ctx.fillRect(eyeX, -8, 6, 6);
+ const eyeX=player.facing>0?player.x+player.w-8:player.x+4;
+ ctx.fillRect(eyeX,player.y+8,6,6);
  ctx.fillStyle="#000";
- ctx.fillRect(player.facing>0?8:-6, -6, 2, 2);
- ctx.restore();
+ ctx.fillRect(player.facing>0?eyeX+4:eyeX,player.y+10,2,2);
 
  for(const p of particles){
   ctx.fillStyle=p.color;
@@ -853,6 +846,25 @@ function draw(){
  }
 
  ctx.restore();
+}
+
+function endGame(){
+ running=false;
+ $("mobileControls").style.display="none";
+ $("hud").style.display="none";
+ $("shardHud").style.display="none";
+ 
+ data.shards+=runShardCount;
+ if(score>data.best)data.best=score;
+ save();
+
+ $("finalKm").textContent=distance.toFixed(2)+" KM";
+ $("finalScore").textContent=score.toLocaleString();
+ $("finalShards").textContent="+"+runShardCount.toLocaleString();
+ $("finalBest").textContent=data.best.toLocaleString();
+
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ $("gameOver").classList.add("active");
 }
 
 function loop(timestamp){
