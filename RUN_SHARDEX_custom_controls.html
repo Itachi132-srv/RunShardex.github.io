@@ -1,0 +1,913 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RUN SHARDEX</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box}
+body{margin:0;background:#090811;color:#f5f2ff;font-family:Inter,Arial;overflow:hidden}
+button{font:inherit;cursor:pointer}
+#gameWrap{position:relative;width:100vw;height:100vh;overflow:hidden}
+canvas{width:100%;height:100%;display:block}
+.screen{
+ position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+ padding:20px;overflow-y:auto;
+ background:radial-gradient(ellipse at 50% 25%,#302052,#141020 48%,#080710);
+ z-index:10;
+}
+.screen.active{display:flex}
+.menu-card{
+ width:min(510px,100%);padding:28px;
+ border:1px solid #ffffff18;border-radius:23px;
+ background:linear-gradient(145deg,#1c1830ed,#100e1ced);
+ box-shadow:0 25px 90px #0009;text-align:center
+}
+.logo{font-family:Orbitron;font-size:clamp(38px,8vw,66px);font-weight:900;letter-spacing:3px;text-shadow:0 0 28px #9b5cff99}
+.logo span{color:#9b5cff}
+.subtitle{color:#a9a2bd;font-size:12px;letter-spacing:4px;margin:7px 0 24px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.stat-box{padding:13px;background:#ffffff08;border:1px solid #ffffff12;border-radius:13px}
+.stat-label{font-size:10px;color:#918ba7;letter-spacing:1.5px;text-transform:uppercase}
+.stat-value{font-family:Orbitron;font-size:21px;font-weight:800;margin-top:7px}
+.menu-buttons{display:grid;gap:10px;margin-top:20px}
+.btn{border:1px solid #ffffff18;border-radius:12px;padding:14px 18px;color:white;background:#ffffff0b;font-weight:800;letter-spacing:1px;transition:.18s}
+.btn:hover{transform:translateY(-2px);background:#ffffff16}
+.btn.primary{background:linear-gradient(100deg,#8b45ed,#6330bc);border:0}
+.btn.blue{background:linear-gradient(100deg,#168ce9,#1258b8);border:0}
+.small-note{font-size:11px;color:#817b95;margin-top:18px}
+.panel-card{width:min(700px,100%);max-height:88vh;overflow:auto;padding:24px;border:1px solid #ffffff18;border-radius:20px;background:linear-gradient(145deg,#1b172b,#100e19)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.panel-head h2{font-family:Orbitron;font-size:22px;margin:0}
+.close-btn{border:1px solid #ffffff20;background:#ffffff0c;color:white;border-radius:10px;padding:9px 13px}
+.grid-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
+.item{border:1px solid #ffffff18;background:#ffffff08;border-radius:14px;padding:15px;text-align:left;min-height:140px}
+.skin-preview{height:48px;width:48px;border-radius:12px;margin-bottom:12px;border:2px solid #ffffff55;box-shadow:0 0 20px currentColor}
+.item h3{font-size:13px;margin:0 0 6px}
+.item p{font-size:11px;color:#918ba7;margin:0 0 12px}
+.item button{width:100%;padding:9px;border:0;border-radius:8px;background:#7540c6;color:white;font-size:11px;font-weight:800}
+.locked{font-size:10px;color:#b2acc2}
+.redeem-box{display:flex;gap:8px;margin-top:14px}
+.redeem-box input{flex:1;min-width:0;background:#090811;border:1px solid #ffffff20;border-radius:10px;padding:13px;color:white;outline:none}
+.message{font-size:12px;min-height:18px;margin-top:12px;color:#c3b4e8}
+#hud{position:absolute;top:16px;right:17px;display:none;z-index:5;text-align:right;min-width:115px;padding:12px 15px;border-radius:13px;border:1px solid #ffffff22;background:#100d1cce}
+.hud-label{font-size:9px;letter-spacing:2px;color:#aaa1bf}
+.hud-number{font-family:Orbitron;font-size:20px;font-weight:800;margin:3px 0 9px}
+#shardHud{position:absolute;top:16px;left:16px;display:none;z-index:5;border:1px solid #ffffff22;background:#100d1cce;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:800}
+#mobileControls{position:absolute;inset:0;display:none;pointer-events:none;z-index:6}
+.control-btn{position:absolute;width:58px;height:58px;border-radius:18px;border:1px solid #ffffff45;background:#171127d9;color:white;font-size:21px;font-weight:900;touch-action:none;user-select:none;transform:translate(-50%,-50%);pointer-events:auto;backdrop-filter:blur(5px)}
+#mobileControls.customizing .control-btn{outline:2px dashed #bd8aff;outline-offset:3px;cursor:grab}
+#controlsOptions{display:grid;gap:15px;margin-top:18px}
+.control-setting{padding:13px;border:1px solid #ffffff16;border-radius:12px;background:#ffffff07}
+.control-setting label{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#e8e2f5;margin-bottom:10px}
+.control-setting input[type=range]{width:100%;accent-color:#9b5cff}
+.setting-check{display:flex;align-items:center;gap:10px;font-size:13px;color:#e8e2f5;margin-top:8px}
+#customizeHint{font-size:11px;color:#b8a9d8;line-height:1.6;margin-top:8px}
+#rewardModal{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:18px;background:#05030bd9;backdrop-filter:blur(9px)}
+#rewardModal.show{display:flex}
+.reward-card{width:min(430px,100%);padding:25px;text-align:center;border:1px solid #5faeff66;border-radius:22px;background:radial-gradient(circle at 50% 0%,#164a7c99,#111322 58%,#090b15);box-shadow:0 0 55px #168dff35;animation:rewardIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes rewardIn{from{opacity:0;transform:translateY(18px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+.reward-check{width:46px;height:46px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:#168dff;color:white;font-size:25px;box-shadow:0 0 24px #168dff99;animation:checkPop .5s .15s both}
+@keyframes checkPop{from{transform:scale(0)}to{transform:scale(1)}}
+.reward-slime{width:72px;height:72px;margin:12px auto 14px;border-radius:48% 52% 42% 44%;background:#168dff;box-shadow:0 0 25px #168dff99;animation:slimeBounce 1.1s ease-in-out infinite alternate}
+@keyframes slimeBounce{from{transform:scaleX(1.08) scaleY(.9)}to{transform:scaleX(.92) scaleY(1.1)}}
+.reward-card h2{font-family:Orbitron;margin:8px 0;color:#fff}
+.reward-card p{font-size:12px;color:#b8c9e2;line-height:1.6}
+.reward-effects{margin:15px 0;padding:13px;text-align:left;border-radius:12px;background:#ffffff0b;border:1px solid #ffffff12;font-size:12px;line-height:1.9;color:#e6efff}
+@media(max-width:600px){.menu-card{padding:22px}.panel-card{padding:17px}.control-btn{width:58px;height:58px}}
+.over-title{font-family:Orbitron;font-size:36px;font-weight:900;color:#ff75a9}
+#toast{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);background:#171127;border:1px solid #ffffff25;border-radius:10px;padding:10px 15px;font-size:12px;display:none;z-index:20}
+@media(max-width:600px){.menu-card{padding:22px}.panel-card{padding:17px}.control-btn{width:54px;height:54px}}
+</style>
+</head>
+<body>
+<div id="gameWrap">
+<canvas id="game"></canvas>
+
+<div id="hud">
+ <div class="hud-label">DISTANCE</div>
+ <div class="hud-number"><span id="km">0.00</span> KM</div>
+ <div class="hud-label">SCORE</div>
+ <div class="hud-number" id="scoreHud">0</div>
+</div>
+<div id="shardHud">SHARDS: <span id="runShards">0</span></div>
+
+<div id="mobileControls">
+ <button class="control-btn" id="leftBtn" aria-label="Move left">A</button>
+ <button class="control-btn" id="rightBtn" aria-label="Move right">D</button>
+ <button class="control-btn" id="jumpBtn" aria-label="Jump">↑</button>
+ <button class="control-btn" id="attackBtn" aria-label="Fire">F</button>
+</div>
+<div id="toast"></div>
+<div id="rewardModal">
+ <div class="reward-card">
+  <div class="reward-check">✓</div>
+  <div class="reward-slime" id="rewardSlime"></div>
+  <h2 id="rewardName">AZURE UNLOCKED</h2>
+  <p id="rewardSubtitle">A limited skin has been added to your collection.</p>
+  <div class="reward-effects" id="rewardEffects"></div>
+  <button class="btn blue" style="width:100%" onclick="closeRewardModal()">AWESOME</button>
+ </div>
+</div>
+
+<section class="screen active" id="home">
+ <div class="menu-card">
+  <div class="logo">RUN <span>SHARDEX</span></div>
+  <div class="subtitle">ENDLESS PLATFORM RUNNER</div>
+  <div class="stats-row">
+   <div class="stat-box"><div class="stat-label">Your Shards</div><div class="stat-value" id="homeShards">2000</div></div>
+   <div class="stat-box"><div class="stat-label">Highest Score</div><div class="stat-value" id="homeBest">0</div></div>
+  </div>
+  <div class="menu-buttons">
+   <button class="btn primary" onclick="startGame()">PLAY GAME</button>
+   <button class="btn" onclick="openPanel('skins')">SKINS</button>
+   <button class="btn" onclick="openPanel('seasons')">SEASONS</button>
+   <button class="btn" onclick="openPanel('controls')">CONTROLS</button>
+   <button class="btn blue" onclick="openPanel('redeem')">REDEEM</button>
+  </div>
+  <div class="small-note">RUN FAR. COLLECT SHARDS. BE THE BEST.</div>
+ </div>
+</section>
+
+<section class="screen" id="skins">
+ <div class="panel-card">
+  <div class="panel-head"><h2>SKIN COLLECTION</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
+  <div class="grid-items" id="skinList"></div>
+ </div>
+</section>
+
+<section class="screen" id="seasons">
+ <div class="panel-card">
+  <div class="panel-head"><h2>SEASONS</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
+  <div class="grid-items" id="seasonList"></div>
+ </div>
+</section>
+
+<section class="screen" id="controls">
+ <div class="panel-card">
+  <div class="panel-head"><h2>CONTROLS</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
+  <p style="color:#aaa1bf;font-size:13px;line-height:1.7">PC / Laptop: <b>D</b> = Right, <b>A</b> = Left, <b>F</b> = Fire, <b>SPACE</b> = Jump. You can remap these keys below.</p>
+  <div id="keyList"></div>
+  <div id="controlsOptions">
+   <div class="control-setting">
+    <label><span>Mobile button size</span><b id="sizeValue">58px</b></label>
+    <input id="controlSize" type="range" min="42" max="90" value="58">
+   </div>
+   <div class="control-setting">
+    <label><span>Button transparency</span><b id="opacityValue">85%</b></label>
+    <input id="controlOpacity" type="range" min="20" max="100" value="85">
+   </div>
+   <div class="control-setting">
+    <label><span>Hide mobile controls on PC / Laptop</span><input id="hidePcControls" type="checkbox"></label>
+    <div style="font-size:11px;color:#918ba7">This setting only hides the on-screen buttons on desktop devices. Mobile devices will keep their controls.</div>
+   </div>
+   <div class="control-setting">
+    <button class="btn primary" id="customizeControlsBtn" style="width:100%">CUSTOMIZE MOBILE BUTTONS</button>
+    <div id="customizeHint">Turn this on, then drag each button wherever you want. Press DONE when finished. Your layout will be saved.</div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="screen" id="redeem">
+ <div class="panel-card" style="max-width:430px">
+  <div class="panel-head"><h2>REDEEM CODE</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
+  <p style="color:#aaa1bf;font-size:13px">Enter your code to unlock a special reward.</p>
+  <div class="redeem-box">
+   <input id="redeemInput" placeholder="Enter your code" autocomplete="off">
+   <button class="btn primary" onclick="redeemCode()">CLAIM</button>
+  </div>
+  <div class="message" id="redeemMessage"></div>
+ </div>
+</section>
+
+<section class="screen" id="gameOver">
+ <div class="menu-card">
+  <div class="over-title">RUN ENDED</div>
+  <div class="subtitle">YOUR RUN HAS FINISHED</div>
+  <div class="stats-row">
+   <div class="stat-box"><div class="stat-label">Distance</div><div class="stat-value" id="finalKm">0.00 KM</div></div>
+   <div class="stat-box"><div class="stat-label">Score</div><div class="stat-value" id="finalScore">0</div></div>
+   <div class="stat-box"><div class="stat-label">Shards Earned</div><div class="stat-value" id="finalShards">0</div></div>
+   <div class="stat-box"><div class="stat-label">Best Score</div><div class="stat-value" id="finalBest">0</div></div>
+  </div>
+  <div class="menu-buttons">
+   <button class="btn primary" onclick="startGame()">PLAY AGAIN</button>
+   <button class="btn" onclick="goHome()">MAIN MENU</button>
+  </div>
+ </div>
+</section>
+</div>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+const $=id=>document.getElementById(id);
+
+let W=innerWidth,H=innerHeight;
+function resize(){
+ W=innerWidth;H=innerHeight;
+ canvas.width=W*devicePixelRatio;
+ canvas.height=H*devicePixelRatio;
+ ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+}
+addEventListener("resize",resize);resize();
+addEventListener("resize",()=>{if(running)showMobileControls()});
+
+const defaultSkins=[
+ {id:"white",name:"Classic",color:"#f4f2ff",laser:"#ffffff",price:0},
+ {id:"purple",name:"Purple",color:"#a45bff",laser:"#bd83ff",price:500},
+ {id:"red",name:"Crimson",color:"#ff4d66",laser:"#ff385b",price:1000},
+ {id:"green",name:"Toxic",color:"#56e28c",laser:"#42ff9b",price:1800},
+ {id:"gold",name:"Golden",color:"#ffc84a",laser:"#ffe36b",price:3000},
+ {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:5000},
+ {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true}
+];
+// ADD YOUR OWN REDEEM SKIN HERE:
+// { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" }
+// The skin body, slime trail and laser will automatically use this color.
+const CUSTOM_SKIN_CODES = [
+ // { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" },
+];
+
+const seasons=[
+ {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d"},
+ {id:"red",name:"Crimson Season",price:4000,bg:"#200c19",platform:"#87334d"},
+ {id:"ice",name:"Frozen Season",price:9000,bg:"#0a1a2a",platform:"#397b9e"},
+ {id:"amethyst",name:"Amethyst Season",price:25000,bg:"#170b29",platform:"#7942a8"}
+];
+
+let data;
+try{data=JSON.parse(localStorage.getItem("runShardexSave")||"null")}catch(e){}
+if(!data)data={shards:2000,best:0,owned:["white"],selected:"white",seasons:["purple"],season:"purple",redeemed:false,redeemedCodes:[]};
+data.redeemedCodes=data.redeemedCodes||[];
+data.owned=data.owned||["white"];
+data.seasons=data.seasons||["purple"];
+data.shards=data.shards??2000;
+data.best=data.best||0;
+data.selected=data.selected||"white";
+data.season=data.season||"purple";
+data.redeemed=!!data.redeemed||data.redeemedCodes.includes("ProbablyMs");
+
+function save(){localStorage.setItem("runShardexSave",JSON.stringify(data))}
+function updateHome(){
+ $("homeShards").textContent=data.shards.toLocaleString();
+ $("homeBest").textContent=data.best.toLocaleString();
+}
+function showScreen(id){
+ customizingControls=false;
+ $("mobileControls").classList.remove("customizing");
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ $(id).classList.add("active");
+ $("hud").style.display="none";
+ $("shardHud").style.display="none";
+ $("mobileControls").style.display="none";
+}
+function goHome(){
+ running=false;
+ input.left=false;input.right=false;
+ showScreen("home");updateHome();
+}
+function openPanel(id){
+ showScreen(id);
+ if(id==="skins")renderSkins();
+ if(id==="seasons")renderSeasons();
+ if(id==="controls")renderKeys();
+ if(id==="redeem"){
+  $("redeemInput").value="";
+  $("redeemMessage").textContent="";
+ }
+}
+function toast(msg){
+ $("toast").textContent=msg;$("toast").style.display="block";
+ clearTimeout(toast.timer);
+ toast.timer=setTimeout(()=>$("toast").style.display="none",1800);
+}
+
+// Mobile control settings are saved separately so you can edit them any time.
+const defaultControlLayout={
+ left:{x:8,y:83}, right:{x:18,y:83},
+ jump:{x:81,y:83}, attack:{x:92,y:83}
+};
+let controlSettings={size:58,opacity:85,hideOnPC:false,layout:{...defaultControlLayout}};
+try{
+ const saved=JSON.parse(localStorage.getItem("runShardexControls")||"null");
+ if(saved)controlSettings={...controlSettings,...saved,layout:{...defaultControlLayout,...(saved.layout||{})}};
+ Object.keys(defaultControlLayout).forEach(k=>{
+  const pos=controlSettings.layout[k]||defaultControlLayout[k];
+  pos.x=Math.max(3,Math.min(97,Number(pos.x)||defaultControlLayout[k].x));
+  pos.y=Math.max(5,Math.min(95,Number(pos.y)||defaultControlLayout[k].y));
+  controlSettings.layout[k]=pos;
+ });
+}catch(e){}
+let customizingControls=false;
+let draggingControl=null;
+
+function isPCDevice(){
+ return window.matchMedia("(pointer:fine)").matches && window.innerWidth>700;
+}
+function applyControlSettings(){
+ const wrap=$("mobileControls");
+ wrap.classList.toggle("customizing",customizingControls);
+ document.querySelectorAll(".control-btn").forEach(btn=>{
+  btn.style.width=controlSettings.size+"px";
+  btn.style.height=controlSettings.size+"px";
+  btn.style.opacity=controlSettings.opacity/100;
+ });
+ Object.entries({left:"leftBtn",right:"rightBtn",jump:"jumpBtn",attack:"attackBtn"}).forEach(([key,id])=>{
+  const pos=controlSettings.layout[key]||defaultControlLayout[key];
+  const el=$(id);el.style.left=pos.x+"%";el.style.top=pos.y+"%";
+ });
+ if($("controlSize"))$("controlSize").value=controlSettings.size;
+ if($("controlOpacity"))$("controlOpacity").value=controlSettings.opacity;
+ if($("sizeValue"))$("sizeValue").textContent=controlSettings.size+"px";
+ if($("opacityValue"))$("opacityValue").textContent=controlSettings.opacity+"%";
+ if($("hidePcControls"))$("hidePcControls").checked=!!controlSettings.hideOnPC;
+}
+function saveControlSettings(){
+ localStorage.setItem("runShardexControls",JSON.stringify(controlSettings));
+ applyControlSettings();
+}
+function showMobileControls(){
+ if(!running){$("mobileControls").style.display="none";return}
+ $("mobileControls").style.display=(isPCDevice()&&controlSettings.hideOnPC)?"none":"block";
+}
+function setControlPosition(key,clientX,clientY){
+ const rect=$("gameWrap").getBoundingClientRect();
+ controlSettings.layout[key]={
+  x:Math.max(3,Math.min(97,((clientX-rect.left)/rect.width)*100)),
+  y:Math.max(5,Math.min(95,((clientY-rect.top)/rect.height)*100))
+ };
+ applyControlSettings();
+}
+
+function renderSkins(){
+ $("skinList").innerHTML="";
+ [...defaultSkins,...getCustomSkins()].forEach(s=>{
+  const owned=data.owned.includes(s.id);
+  const selected=data.selected===s.id;
+  const locked=(s.id==="secretblue"&&!data.redeemed)||(!!s.customCode&&!data.redeemedCodes.includes(s.customCode));
+  const div=document.createElement("div");div.className="item";
+  div.innerHTML=`
+   <div class="skin-preview" style="background:${s.color};color:${s.color}"></div>
+   <h3>${s.name}</h3>
+   <p>${locked?"Special skin":s.secret?"LIMITED":s.price===0?"Free":s.price.toLocaleString()+" shards"}</p>
+   ${locked?'<div class="locked">LOCKED</div>':
+   `<button>${selected?"EQUIPPED":owned?"EQUIP":"BUY"}</button>`}`;
+  const btn=div.querySelector("button");
+  if(btn)btn.onclick=()=>buySkin(s);
+  $("skinList").appendChild(div);
+ });
+}
+function buySkin(s){
+ if(!data.owned.includes(s.id)){
+  if(data.shards<s.price){toast("Not enough shards!");return}
+  data.shards-=s.price;data.owned.push(s.id);
+ }
+ data.selected=s.id;save();renderSkins();updateHome();
+}
+function renderSeasons(){
+ $("seasonList").innerHTML="";
+ seasons.forEach(s=>{
+  const owned=data.seasons.includes(s.id),selected=data.season===s.id;
+  const div=document.createElement("div");div.className="item";
+  div.innerHTML=`
+   <div class="skin-preview" style="background:${s.bg};border-color:${s.platform}"></div>
+   <h3>${s.name}</h3><p>${s.price===0?"Free":s.price.toLocaleString()+" shards"}</p>
+   <button>${selected?"ACTIVE":owned?"SELECT":"UNLOCK"}</button>`;
+  div.querySelector("button").onclick=()=>{
+   if(!owned){
+    if(data.shards<s.price){toast("Not enough shards!");return}
+    data.shards-=s.price;data.seasons.push(s.id);
+   }
+   data.season=s.id;save();renderSeasons();updateHome();
+  };
+  $("seasonList").appendChild(div);
+ });
+}
+function getCustomSkins(){
+ return CUSTOM_SKIN_CODES.map((entry,index)=>({
+  id:"custom_"+(entry.code||("skin_"+index)).toLowerCase().replace(/[^a-z0-9_-]/g,"_"),
+  name:entry.name||"Custom Skin",
+  color:entry.color||"#a45bff",
+  laser:entry.color||"#a45bff",
+  trail:entry.color||"#a45bff",
+  price:0,
+  secret:true,
+  customCode:entry.code
+ }));
+}
+function closeRewardModal(){$("rewardModal").classList.remove("show")}
+function showSkinReward(s){
+ $("rewardName").textContent=s.name.toUpperCase()+" UNLOCKED";
+ $("rewardSubtitle").textContent="This limited skin has been added to your collection.";
+ $("rewardSlime").style.background=s.color;
+ $("rewardSlime").style.boxShadow="0 0 25px "+s.color;
+ $("rewardEffects").innerHTML=
+  "<b>SKIN:</b> "+s.name+
+  "<br><b>POWER:</b> "+(s.id==="secretblue"?"Long-range laser attack":"Custom color skin")+
+  "<br><b>SLIME TRAIL:</b> "+s.color+
+  "<br><b>LASER:</b> "+s.color;
+ $("rewardModal").classList.add("show");
+}
+
+function redeemCode(){
+ const code=$("redeemInput").value.trim();
+ const message=$("redeemMessage");
+ if(!code){message.textContent="Enter a code first.";return}
+ if(data.redeemedCodes.includes(code)){
+  message.textContent="This code has already been used.";return;
+ }
+ if(code==="ProbablyMs"){
+  data.redeemed=true;
+  if(!data.owned.includes("secretblue"))data.owned.push("secretblue");
+  data.redeemedCodes.push(code);
+  save();
+  message.textContent="Azure skin unlocked successfully!";
+  toast("Azure unlocked!");
+  showSkinReward(defaultSkins.find(s=>s.id==="secretblue"));
+ }else if(CUSTOM_SKIN_CODES.some(s=>s.code===code)){
+  const entry=CUSTOM_SKIN_CODES.find(s=>s.code===code);
+  const index=CUSTOM_SKIN_CODES.indexOf(entry);
+  const skin=getCustomSkins()[index];
+  if(!data.owned.includes(skin.id))data.owned.push(skin.id);
+  data.redeemedCodes.push(code);
+  save();
+  message.textContent=skin.name+" skin unlocked successfully!";
+  showSkinReward(skin);
+ }else if(code==="freeshards"){
+  data.shards+=5000;
+  data.redeemedCodes.push(code);
+  save();updateHome();
+  message.textContent="5000 shards added to your wallet!";
+  toast("5000 shards received!");
+ }else{
+  message.textContent="Invalid code. Please try again.";
+ }
+}
+
+const keyDefaults={left:"KeyA",right:"KeyD",jump:"Space",attack:"KeyF"};
+let keys={...keyDefaults};
+try{keys={...keyDefaults,...JSON.parse(localStorage.getItem("runShardexKeys")||"{}")}}catch(e){}
+let remap=null;
+function renderKeys(){
+ const names={left:"Move Left (A)",right:"Move Right (D)",jump:"Jump (SPACE)",attack:"Fire (F)"};
+ $("keyList").innerHTML="";
+ Object.keys(names).forEach(k=>{
+  const row=document.createElement("div");
+  row.style.cssText="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #ffffff15;font-size:13px";
+  const b=document.createElement("button");b.className="close-btn";
+  const keyLabels={KeyA:"A",KeyD:"D",KeyF:"F",Space:"SPACE",ArrowLeft:"←",ArrowRight:"→",ArrowUp:"↑",ArrowDown:"↓"};
+  b.textContent=remap===k?"Press a key":(keyLabels[keys[k]]||keys[k].replace(/^Key/,""));
+  b.onclick=()=>{remap=k;renderKeys()};
+  row.innerHTML=`<span>${names[k]}</span>`;row.appendChild(b);
+  $("keyList").appendChild(row);
+ });
+ applyControlSettings();
+ $("customizeControlsBtn").textContent=customizingControls?"DONE CUSTOMIZING":"CUSTOMIZE MOBILE BUTTONS";
+}
+
+const input={left:false,right:false};
+let running=false,player,camera=0,platforms=[],crystals=[],enemies=[],powers=[];
+let lasers=[],particles=[];
+let score=0,distance=0,runShardCount=0,frame=0;
+let lastTime=0,accumulator=0;
+const STEP=1000/60;
+let attackTimer=0,oneHit=0,shield=0;
+
+addEventListener("keydown",e=>{
+ if(remap){
+  if(["Escape","Tab"].includes(e.code))return;
+  keys[remap]=e.code;remap=null;
+  localStorage.setItem("runShardexKeys",JSON.stringify(keys));
+  renderKeys();return;
+ }
+ if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.code))e.preventDefault();
+ if(e.code===keys.jump)jump();
+ if(e.code===keys.attack)attack();
+ if(e.code===keys.left)input.left=true;
+ if(e.code===keys.right)input.right=true;
+});
+addEventListener("keyup",e=>{
+ if(e.code===keys.left)input.left=false;
+ if(e.code===keys.right)input.right=false;
+});
+function bindMobileButton(id,action){
+ const el=$(id);
+ el.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  if(customizingControls){
+   draggingControl=id.replace("Btn","");
+   el.setPointerCapture(e.pointerId);
+   setControlPosition(draggingControl,e.clientX,e.clientY);
+   return;
+  }
+  if(action==="left"||action==="right")input[action]=true;
+  if(action==="jump")jump();
+  if(action==="attack")attack();
+ });
+ el.addEventListener("pointermove",e=>{
+  if(customizingControls&&draggingControl===id.replace("Btn","")&&(e.buttons||e.pressure>0)){
+   setControlPosition(draggingControl,e.clientX,e.clientY);
+  }
+ });
+ ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>el.addEventListener(ev,()=>{
+  if(action==="left"||action==="right")input[action]=false;
+  if(draggingControl===id.replace("Btn",""))draggingControl=null;
+ }));
+}
+bindMobileButton("leftBtn","left");bindMobileButton("rightBtn","right");
+bindMobileButton("jumpBtn","jump");bindMobileButton("attackBtn","attack");
+
+$("controlSize").addEventListener("input",e=>{
+ controlSettings.size=Number(e.target.value);saveControlSettings();
+});
+$("controlOpacity").addEventListener("input",e=>{
+ controlSettings.opacity=Number(e.target.value);saveControlSettings();
+});
+$("hidePcControls").addEventListener("change",e=>{
+ controlSettings.hideOnPC=e.target.checked;saveControlSettings();
+ if(running)showMobileControls();
+});
+$("customizeControlsBtn").addEventListener("click",()=>{
+ customizingControls=!customizingControls;
+ $("customizeControlsBtn").textContent=customizingControls?"DONE CUSTOMIZING":"CUSTOMIZE MOBILE BUTTONS";
+ $("customizeHint").textContent=customizingControls
+  ?"Drag each on-screen button to your preferred position, then press DONE CUSTOMIZING.":"Turn this on, then drag each button wherever you want. Press DONE when finished. Your layout will be saved.";
+ $("mobileControls").classList.toggle("customizing",customizingControls);
+ if(customizingControls){
+  $("mobileControls").style.display="block";
+  toast("Drag the buttons to move them");
+ }else{
+  saveControlSettings();
+  showMobileControls();
+ }
+});
+
+function platformColor(){return seasons.find(s=>s.id===data.season)?.platform||"#51347d"}
+function worldColor(){return seasons.find(s=>s.id===data.season)?.bg||"#100b20"}
+
+function makeEnemy(x,y,width){
+ const r=Math.random();
+ const type=r<.55?"red":r<.80?"brown":"black";
+ return {type,x:x+width/2,y:y-32,w:30,h:32,hp:type==="black"?3:2,alive:true,vx:.65,vy:0,minX:x+5,maxX:x+width-35};
+}
+
+function startGame(){
+ running=false;
+ input.left=false;input.right=false;
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+
+ score=0;distance=0;runShardCount=0;camera=0;frame=0;
+ attackTimer=0;oneHit=0;shield=0;
+ lasers=[];particles=[];
+
+ const startY=Math.min(H*.68,H-130);
+ player={x:90,y:startY-38,w:28,h:38,vx:0,vy:0,grounded:true,facing:1,hp:3,invuln:0};
+
+ platforms=[{x:0,y:startY,w:340,h:25}];
+ crystals=[];enemies=[];powers=[];
+ let x=0;
+ let previousY=startY;
+
+ for(let i=0;i<130;i++){
+  const previousWidth=platforms[platforms.length-1].w;
+  const gap=30;
+  x+=previousWidth+gap;
+  const minY=Math.max(115,H*.45);
+  const maxY=H-105;
+  const y=Math.max(minY,Math.min(maxY,previousY+(Math.random()-.5)*70));
+  const width=220+Math.random()*80;
+  platforms.push({x,y,w:width,h:20});
+  previousY=y;
+  if(Math.random()<.9)crystals.push({x:x+width/2,y:y-36,collected:false});
+  if(i%2===0)enemies.push(makeEnemy(x,y,width));
+  if(i>0&&i%8===4)powers.push({x:x+width/2,y:y-55,type:Math.random()<.5?"oneHit":"shield",collected:false});
+ }
+
+ $("hud").style.display="block";
+ $("shardHud").style.display="block";
+ applyControlSettings();
+ $("runShards").textContent="0";
+
+ running=true;
+ showMobileControls();
+ lastTime=performance.now();accumulator=0;
+ draw();
+ requestAnimationFrame(loop);
+}
+
+function jump(){
+ if(running&&player.grounded){player.vy=-10.5;player.grounded=false}
+}
+function attack(){
+ if(!running||attackTimer>0)return;
+ attackTimer=18;
+ const skin=[...defaultSkins,...getCustomSkins()].find(s=>s.id===data.selected)||defaultSkins[0];
+ const azure=data.selected==="secretblue";
+ lasers.push({
+  x:player.facing>0?player.x+player.w:player.x,
+  y:player.y+player.h/2,
+  vx:player.facing*(azure?11:9),
+  w:azure?380:250,traveled:0,color:skin.laser||skin.color,
+  damage:1,hitEnemies:[]
+ });
+ for(let i=0;i<8;i++)particles.push({
+  x:player.x+player.w/2,y:player.y+player.h/2,
+  vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,
+  color:skin.color,life:20
+ });
+}
+function hit(a,b){
+ return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+}
+function damagePlayer(){
+ if(player.invuln>0||shield>0)return;
+ player.hp--;player.invuln=75;
+ if(player.hp<=0)endGame();
+}
+
+function update(){
+ if(!running)return;
+ frame++;
+ if(attackTimer>0)attackTimer--;
+ if(player.invuln>0)player.invuln--;
+ if(oneHit>0)oneHit--;
+ if(shield>0)shield--;
+
+ const move=(input.right?1:0)-(input.left?1:0);
+ player.vx+=move*.32;player.vx*=.90;
+ player.vx=Math.max(-3.2,Math.min(3.2,player.vx));
+ if(move!==0)player.facing=move;
+ player.x+=player.vx;
+
+ const oldY=player.y;
+ player.vy+=.42;player.vy=Math.min(player.vy,9);
+ player.y+=player.vy;player.grounded=false;
+
+ for(const p of platforms){
+  if(player.vy>=0&&oldY+player.h<=p.y&&player.y+player.h>=p.y&&player.x+player.w>p.x&&player.x<p.x+p.w){
+   player.y=p.y-player.h;player.vy=0;player.grounded=true;
+  }
+ }
+
+ if(player.x<camera+25)player.x=camera+25;
+ camera=Math.max(0,player.x-W*.32);
+ distance=Math.max(distance,player.x/10000);
+ score=Math.max(score,Math.floor(player.x/10));
+
+ // Lasers
+ for(const l of lasers){
+  l.x+=l.vx;l.traveled+=Math.abs(l.vx);
+  for(const e of enemies){
+   if(!e.alive||l.hitEnemies.includes(e))continue;
+   if(hit({x:l.x-4,y:l.y-2,w:8,h:4},e)){
+    const damage=oneHit>0?(e.type==="black"?1.5:2):1;
+    e.hp-=damage;l.hitEnemies.push(e);
+    for(let i=0;i<7;i++)particles.push({
+     x:e.x+e.w/2,y:e.y+e.h/2,
+     vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4,
+     color:l.color,life:18
+    });
+    if(e.hp<=0){e.alive=false;score+=100}
+   }
+  }
+ }
+ lasers=lasers.filter(l=>l.traveled<l.w);
+
+ // Crystals
+ for(const c of crystals){
+  if(!c.collected&&hit(player,{x:c.x-10,y:c.y-10,w:20,h:20})){
+   c.collected=true;runShardCount+=5;score+=25;
+   $("runShards").textContent=runShardCount;
+  }
+ }
+ // Powers
+ for(const p of powers){
+  if(!p.collected&&hit(player,{x:p.x-12,y:p.y-12,w:24,h:24})){
+   p.collected=true;
+   if(p.type==="oneHit")oneHit=600;else shield=600;
+   toast(p.type==="oneHit"?"ONE HIT POWER":"SHIELD ACTIVATED");
+  }
+ }
+
+ // Enemy patrol and collisions
+ for(const e of enemies){
+  if(!e.alive)continue;
+  if(e.x<=e.minX)e.vx=.65;
+  if(e.x>=e.maxX)e.vx=-.65;
+  e.x+=e.vx;
+  const oldEnemyY=e.y;
+  e.vy+=.4;e.vy=Math.min(e.vy,8);e.y+=e.vy;
+
+  for(const p of platforms){
+   if(e.vy>=0&&oldEnemyY+e.h<=p.y&&e.y+e.h>=p.y&&e.x+e.w>p.x&&e.x<p.x+p.w){
+    e.y=p.y-e.h;e.vy=0;
+   }
+  }
+  if(hit(player,e)){
+   damagePlayer();
+   if(e.type==="brown"||e.type==="black"){
+    player.vx+=(player.x<e.x?-1:1)*1.8;
+    player.vy=-1.2;
+   }else{
+    player.vx+=(player.x<e.x?-1:1)*.7;
+   }
+  }
+ }
+
+ particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life--});
+ particles=particles.filter(p=>p.life>0);
+
+ if(player.y>H+180)endGame();
+
+ const farthest=platforms[platforms.length-1];
+ if(farthest.x+farthest.w<camera+W*3){
+  const gap=30;
+  const x=farthest.x+farthest.w+gap;
+  const minY=Math.max(115,H*.45);
+  const maxY=H-105;
+  const y=Math.max(minY,Math.min(maxY,farthest.y+(Math.random()-.5)*70));
+  const width=220+Math.random()*80;
+  platforms.push({x,y,w:width,h:20});
+  if(Math.random()<.9)crystals.push({x:x+width/2,y:y-36,collected:false});
+  if(Math.random()<.8)enemies.push(makeEnemy(x,y,width));
+  if(frame%8===0)powers.push({x:x+width/2,y:y-55,type:Math.random()<.5?"oneHit":"shield",collected:false});
+ }
+ platforms=platforms.filter(p=>p.x+p.w>camera-300);
+ crystals=crystals.filter(c=>c.x>camera-300&&!c.collected);
+ enemies=enemies.filter(e=>e.x>camera-300&&e.alive);
+ powers=powers.filter(p=>p.x>camera-300&&!p.collected);
+
+ $("km").textContent=distance.toFixed(2);
+ $("scoreHud").textContent=score.toLocaleString();
+}
+
+function draw(){
+ ctx.fillStyle=worldColor();ctx.fillRect(0,0,W,H);
+
+ for(let i=0;i<65;i++){
+  const x=((i*173-camera*.12)%(W+40)+W+40)%(W+40);
+  const y=(i*97)%H;
+  ctx.fillStyle="#ffffff35";ctx.fillRect(x,y,2,2);
+ }
+ ctx.fillStyle="#ffffff08";
+ for(let i=0;i<8;i++){
+  const x=((i*240-camera*.25)%(W+300)+W+300)%(W+300)-100;
+  ctx.beginPath();ctx.arc(x,150+(i%3)*65,35+(i%3)*12,0,Math.PI*2);ctx.fill();
+ }
+
+ ctx.save();ctx.translate(-camera,0);
+
+ for(const p of platforms){
+  ctx.fillStyle="#100c1c";ctx.fillRect(p.x,p.y,p.w,p.h);
+  ctx.fillStyle=platformColor();ctx.fillRect(p.x,p.y,p.w,5);
+  ctx.fillStyle="#ffffff12";ctx.fillRect(p.x,p.y+5,p.w,2);
+ }
+ for(const c of crystals){
+  ctx.save();ctx.translate(c.x,c.y);ctx.rotate(Math.PI/4);
+  ctx.fillStyle="#b78aff";ctx.shadowColor="#a15aff";ctx.shadowBlur=17;
+  ctx.fillRect(-7,-7,14,14);ctx.restore();
+ }
+ for(const p of powers){
+  ctx.fillStyle=p.type==="oneHit"?"#ffb64b":"#3cbcff";
+  ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=16;
+  ctx.beginPath();ctx.arc(p.x,p.y,11,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+  ctx.fillStyle="#fff";ctx.font="bold 11px Arial";ctx.textAlign="center";
+  ctx.fillText(p.type==="oneHit"?"!":"S",p.x,p.y+4);
+ }
+
+ for(const e of enemies){
+  if(!e.alive)continue;
+  const color=e.type==="red"?"#e34b77":e.type==="brown"?"#a86a3c":"#171820";
+  ctx.fillStyle=color;ctx.fillRect(e.x,e.y,e.w,e.h);
+  ctx.fillStyle="#fff";
+  ctx.fillRect(e.x+7,e.y+8,5,5);ctx.fillRect(e.x+19,e.y+8,5,5);
+  ctx.fillStyle="#271020";ctx.fillRect(e.x+9,e.y+21,12,4);
+  if(e.type==="black"){
+   ctx.strokeStyle="#656879";ctx.lineWidth=2;
+   ctx.strokeRect(e.x+2,e.y+2,e.w-4,e.h-4);
+  }
+ }
+
+ const skin=[...defaultSkins,...getCustomSkins()].find(s=>s.id===data.selected)||defaultSkins[0];
+
+ // Azure trail
+ if(data.selected==="secretblue"){
+  for(let i=0;i<6;i++){
+   ctx.globalAlpha=.10+i*.07;
+   ctx.fillStyle="#20aaff";ctx.shadowColor="#168dff";ctx.shadowBlur=20;
+   ctx.fillRect(player.x-18-i*13,player.y+7,13,24);
+  }
+  ctx.globalAlpha=1;ctx.shadowBlur=0;
+ }
+
+ // Unique skin effects
+ if(data.selected==="purple"||data.selected==="amethyst"){
+  for(let i=0;i<4;i++){
+   ctx.globalAlpha=.45;ctx.fillStyle=skin.color;
+   ctx.fillRect(player.x-8-i*8,player.y+12+i*3,5,5);
+  }
+  ctx.globalAlpha=1;
+ }
+ if(data.selected==="red"&&frame%5<3){
+  ctx.fillStyle="#ff4d6680";ctx.fillRect(player.x-8,player.y+7,5,25);
+ }
+ if(data.selected==="green"&&frame%12<6){
+  ctx.fillStyle="#56e28c";ctx.fillRect(player.x+10,player.y-7,5,5);
+ }
+ if(data.selected==="gold"){
+  ctx.fillStyle="#ffe36b";ctx.globalAlpha=.7;
+  ctx.fillRect(player.x+5,player.y-6,5,5);
+  ctx.fillRect(player.x+22,player.y+12,4,4);
+  ctx.globalAlpha=1;
+ }
+
+ // Every skin gets a soft matching slime trail.
+ if(frame%4===0){
+  particles.push({x:player.x-3,y:player.y+player.h-5,vx:-.35,vy:.15,color:skin.trail||skin.color,life:18});
+ }
+ // Player
+ if(!(player.invuln>0&&Math.floor(frame/5)%2===0)){
+  const slimePulse=Math.sin(frame*.18);
+  const squash=player.grounded?1+slimePulse*.045:0.91;
+  const stretch=player.grounded?1-slimePulse*.045:1.12;
+  const cx=player.x+player.w/2,cy=player.y+player.h;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.scale(squash,stretch);
+  ctx.fillStyle=skin.color;ctx.shadowColor=skin.color;
+  ctx.shadowBlur=shield>0?24:12;
+  ctx.beginPath();
+  ctx.moveTo(-player.w/2,0);
+  ctx.quadraticCurveTo(-player.w/2,-player.h*.18,-player.w*.42,-player.h*.66);
+  ctx.quadraticCurveTo(-player.w*.34,-player.h*1.05,0,-player.h);
+  ctx.quadraticCurveTo(player.w*.38,-player.h*1.04,player.w*.46,-player.h*.62);
+  ctx.quadraticCurveTo(player.w/2,-player.h*.16,player.w/2,0);
+  ctx.quadraticCurveTo(0,player.h*.08,-player.w/2,0);
+  ctx.fill();ctx.shadowBlur=0;
+  ctx.fillStyle="#ffffff55";
+  ctx.beginPath();ctx.ellipse(-6,-player.h*.76,5,3,-.35,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#171020";
+  ctx.fillRect(player.facing>0?3:-10,-player.h*.69,5,5);
+  ctx.fillRect(player.facing>0?-9:4,-player.h*.69,5,5);
+  ctx.restore();
+ }
+
+ // Thin laser
+ for(const l of lasers){
+  ctx.fillStyle=l.color;ctx.shadowColor=l.color;ctx.shadowBlur=12;
+  ctx.fillRect(l.x,l.y-2,32,4);
+  ctx.fillStyle="#fff";ctx.fillRect(l.x,l.y-1,25,2);
+  ctx.shadowBlur=0;
+ }
+
+ // Skin particles
+ for(const p of particles){
+  ctx.globalAlpha=Math.max(0,p.life/20);
+  ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,4,4);
+ }
+ ctx.globalAlpha=1;
+ ctx.restore();
+
+ ctx.fillStyle="#fff";ctx.font="bold 13px Inter";ctx.textAlign="left";
+ ctx.fillText("HEALTH",18,95);
+ for(let i=0;i<3;i++){
+  ctx.fillStyle=i<player.hp?"#f35c8a":"#ffffff25";
+  ctx.fillRect(18+i*22,105,16,8);
+ }
+ if(oneHit>0){ctx.fillStyle="#ffbd58";ctx.fillText("ONE HIT",18,135)}
+ if(shield>0){ctx.fillStyle="#5bcaff";ctx.fillText("SHIELD",18,153)}
+}
+
+function loop(now){
+ if(!running)return;
+ const delta=Math.min(100,now-lastTime);
+ lastTime=now;accumulator+=delta;
+ while(accumulator>=STEP){
+  update();accumulator-=STEP;
+  if(!running)return;
+ }
+ draw();requestAnimationFrame(loop);
+}
+
+function endGame(){
+ if(!running)return;
+ running=false;
+ input.left=false;input.right=false;
+ data.shards+=runShardCount;
+ data.best=Math.max(data.best,score);
+ save();updateHome();
+ $("finalKm").textContent=distance.toFixed(2)+" KM";
+ $("finalScore").textContent=score.toLocaleString();
+ $("finalShards").textContent=runShardCount.toLocaleString();
+ $("finalBest").textContent=data.best.toLocaleString();
+ showScreen("gameOver");
+}
+updateHome();
+applyControlSettings();
+</script>
+</body>
+</html>
