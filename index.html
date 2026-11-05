@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,6 +79,89 @@ canvas{width:100%;height:100%;display:block}
 .over-title{font-family:Orbitron;font-size:36px;font-weight:900;color:#ff75a9}
 #toast{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);background:#171127;border:1px solid #ffffff25;border-radius:10px;padding:10px 15px;font-size:12px;display:none;z-index:20}
 @media(max-width:600px){.menu-card{padding:22px}.panel-card{padding:17px}.control-btn{width:54px;height:54px}}
+
+/* ===== PREMIUM NEON SKINS & SEASONS ===== */
+#skins .panel-card,#seasons .panel-card{
+ border:1px solid #9b5cff40;
+ background:linear-gradient(145deg,#1d1833,#0e0c18);
+ box-shadow:0 0 50px #7a3dff22,inset 0 0 40px #ffffff05;
+}
+.neon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:16px}
+.neon-card{
+ --c:#9b5cff;
+ position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;
+ padding:18px 14px 14px;border-radius:18px;overflow:hidden;
+ border:1px solid color-mix(in srgb,var(--c) 45%,transparent);
+ background:linear-gradient(160deg,color-mix(in srgb,var(--c) 14%,#14111f),#0c0a15 75%);
+ box-shadow:0 0 0 1px #00000060,0 6px 24px color-mix(in srgb,var(--c) 18%,transparent);
+ transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s;
+ text-transform:uppercase;
+}
+.neon-card::before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--c) 30%,transparent),transparent 62%);
+ opacity:.55;transition:opacity .25s;
+}
+.neon-card:hover{
+ transform:translateY(-6px) scale(1.02);border-color:var(--c);
+ box-shadow:0 0 0 1px var(--c),0 12px 38px color-mix(in srgb,var(--c) 45%,transparent);
+}
+.neon-card:hover::before{opacity:1}
+.neon-card.equipped{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 0 30px color-mix(in srgb,var(--c) 40%,transparent)}
+.neon-card>*{position:relative}
+.neon-preview{
+ width:68px;height:68px;margin-bottom:14px;border-radius:20px;
+ background:var(--c);border:2px solid #ffffff70;
+ box-shadow:0 0 26px var(--c),inset 0 0 18px #ffffff40;
+ transition:transform .3s;
+}
+.neon-card:hover .neon-preview{transform:scale(1.1) rotate(-4deg)}
+.season-preview{
+ width:100%;height:68px;margin-bottom:14px;border-radius:14px;
+ border:2px solid var(--c);box-shadow:0 0 22px color-mix(in srgb,var(--c) 60%,transparent);
+ position:relative;overflow:hidden;
+}
+.season-preview::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;background:var(--c);opacity:.9}
+.neon-name{font-family:Orbitron;font-size:13px;font-weight:800;letter-spacing:1.5px;margin:0 0 6px;color:#fff}
+.neon-rarity{font-size:10px;font-weight:800;letter-spacing:2px;margin:0 0 10px;color:var(--c);text-shadow:0 0 10px var(--c)}
+.neon-price{
+ font-family:Orbitron;font-size:12px;font-weight:800;letter-spacing:1px;
+ padding:6px 12px;margin-bottom:12px;border-radius:999px;
+ background:#ffffff0d;border:1px solid #ffffff1c;color:#fff;
+}
+.neon-price.free{color:#6dffb0;border-color:#6dffb055}
+.neon-price.owned{color:#c3b4e8}
+.neon-btn{
+ width:100%;padding:10px;border:0;border-radius:10px;font-size:11px;font-weight:800;letter-spacing:1.5px;color:#fff;
+ background:linear-gradient(100deg,color-mix(in srgb,var(--c) 75%,#000),color-mix(in srgb,var(--c) 45%,#000));
+ box-shadow:0 0 14px color-mix(in srgb,var(--c) 40%,transparent);
+ transition:transform .18s,box-shadow .18s;text-transform:uppercase;
+}
+.neon-btn:hover{transform:translateY(-1px);box-shadow:0 0 22px var(--c)}
+.neon-btn.on{background:#ffffff14;box-shadow:none;border:1px solid var(--c);color:var(--c)}
+.neon-locked{font-size:10px;font-weight:800;letter-spacing:2px;color:#b2acc2;padding:10px;border:1px dashed #ffffff30;border-radius:10px;width:100%}
+.limited-tag{
+ font-size:9px;font-weight:900;letter-spacing:2px;margin:0 0 10px;padding:3px 9px;border-radius:6px;
+ border:1px solid #ffffff30;background:#00000055;
+ background-image:linear-gradient(90deg,#ff3b3b,#ffb02e,#f6ff3b,#3bff7a,#3bd5ff,#6b5bff,#ff3bd9,#ff3b3b);
+ background-size:300% 100%;-webkit-background-clip:text;background-clip:text;
+ color:transparent;-webkit-text-fill-color:transparent;
+ animation:rainbowMove 3s linear infinite;
+}
+@keyframes rainbowMove{from{background-position:0% 0}to{background-position:300% 0}}
+.neon-card.celestial{
+ --c:#27baff;
+ animation:celestialGlow 2.4s ease-in-out infinite alternate;
+}
+.neon-card.celestial .neon-preview{animation:celestialPulse 2.4s ease-in-out infinite alternate}
+@keyframes celestialGlow{
+ from{box-shadow:0 0 0 1px #168dff,0 0 18px #168dff77,0 0 40px #168dff33}
+ to{box-shadow:0 0 0 1px #6fd6ff,0 0 34px #27baffcc,0 0 74px #168dff66}
+}
+@keyframes celestialPulse{
+ from{box-shadow:0 0 20px #168dff,inset 0 0 14px #ffffff30;filter:brightness(1)}
+ to{box-shadow:0 0 44px #6fd6ff,0 0 70px #168dff88,inset 0 0 22px #ffffff66;filter:brightness(1.25)}
+}
 </style>
 </head>
 <body>
@@ -134,14 +216,14 @@ canvas{width:100%;height:100%;display:block}
 <section class="screen" id="skins">
  <div class="panel-card">
   <div class="panel-head"><h2>SKIN COLLECTION</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
-  <div class="grid-items" id="skinList"></div>
+  <div class="neon-grid" id="skinList"></div>
  </div>
 </section>
 
 <section class="screen" id="seasons">
  <div class="panel-card">
   <div class="panel-head"><h2>SEASONS</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
-  <div class="grid-items" id="seasonList"></div>
+  <div class="neon-grid" id="seasonList"></div>
  </div>
 </section>
 
@@ -216,14 +298,15 @@ function resize(){
 addEventListener("resize",resize);resize();
 addEventListener("resize",()=>{if(running)showMobileControls()});
 
+// Prices end in 99 (Classic stays free). rarity labels use each skin's own color.
 const defaultSkins=[
- {id:"white",name:"Classic",color:"#f4f2ff",laser:"#ffffff",price:0},
- {id:"purple",name:"Purple",color:"#a45bff",laser:"#bd83ff",price:500},
- {id:"red",name:"Crimson",color:"#ff4d66",laser:"#ff385b",price:1000},
- {id:"green",name:"Toxic",color:"#56e28c",laser:"#42ff9b",price:1800},
- {id:"gold",name:"Golden",color:"#ffc84a",laser:"#ffe36b",price:3000},
- {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:5000},
- {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true}
+ {id:"white",name:"Classic",color:"#f4f2ff",laser:"#ffffff",price:0,rarity:"COMMON"},
+ {id:"purple",name:"Purple",color:"#a45bff",laser:"#bd83ff",price:499,rarity:"UNCOMMON"},
+ {id:"red",name:"Crimson",color:"#ff4d66",laser:"#ff385b",price:999,rarity:"RARE"},
+ {id:"green",name:"Toxic",color:"#56e28c",laser:"#42ff9b",price:1799,rarity:"EPIC"},
+ {id:"gold",name:"Golden",color:"#ffc84a",laser:"#ffe36b",price:2999,rarity:"LEGENDARY"},
+ {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:4999,rarity:"MYTHIC"},
+ {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true,rarity:"CELESTIAL"}
 ];
 // ADD YOUR OWN REDEEM SKIN HERE:
 // { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" }
@@ -233,10 +316,10 @@ const CUSTOM_SKIN_CODES = [
 ];
 
 const seasons=[
- {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d"},
- {id:"red",name:"Crimson Season",price:4000,bg:"#200c19",platform:"#87334d"},
- {id:"ice",name:"Frozen Season",price:9000,bg:"#0a1a2a",platform:"#397b9e"},
- {id:"amethyst",name:"Amethyst Season",price:25000,bg:"#170b29",platform:"#7942a8"}
+ {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d",rarity:"COMMON",color:"#a45bff"},
+ {id:"red",name:"Crimson Season",price:1999,bg:"#200c19",platform:"#87334d",rarity:"RARE",color:"#ff4d66"},
+ {id:"ice",name:"Frozen Season",price:2499,bg:"#0a1a2a",platform:"#397b9e",rarity:"EPIC",color:"#4cc9ff"},
+ {id:"amethyst",name:"Amethyst Season",price:2999,bg:"#170b29",platform:"#7942a8",rarity:"LEGENDARY",color:"#d28cff"}
 ];
 
 let data;
@@ -349,13 +432,20 @@ function renderSkins(){
   const owned=data.owned.includes(s.id);
   const selected=data.selected===s.id;
   const locked=(s.id==="secretblue"&&!data.redeemed)||(!!s.customCode&&!data.redeemedCodes.includes(s.customCode));
-  const div=document.createElement("div");div.className="item";
+  const celestial=s.id==="secretblue";
+  const rarity=s.rarity||"SPECIAL";
+  const div=document.createElement("div");
+  div.className="neon-card"+(celestial?" celestial":"")+(selected?" equipped":"");
+  div.style.setProperty("--c",s.color);
+  const priceText=s.price===0?"FREE":owned?"OWNED":s.price.toLocaleString()+" SHARDS";
+  const priceClass=s.price===0&&!s.secret?"free":owned?"owned":"";
   div.innerHTML=`
-   <div class="skin-preview" style="background:${s.color};color:${s.color}"></div>
-   <h3>${s.name}</h3>
-   <p>${locked?"Special skin":s.secret?"LIMITED":s.price===0?"Free":s.price.toLocaleString()+" shards"}</p>
-   ${locked?'<div class="locked">LOCKED</div>':
-   `<button>${selected?"EQUIPPED":owned?"EQUIP":"BUY"}</button>`}`;
+   <div class="neon-preview"></div>
+   <h3 class="neon-name">${s.name.toUpperCase()}</h3>
+   <div class="neon-rarity">${rarity}</div>
+   ${s.secret?'<div class="limited-tag" style="margin-bottom:12px;font-size:11px;padding:6px 12px">LIMITED</div>':`<div class="neon-price ${priceClass}">${priceText}</div>`}
+   ${locked?'<div class="neon-locked">LOCKED</div>':
+   `<button class="neon-btn${selected?" on":""}">${selected?"EQUIPPED":owned?"EQUIP":"BUY"}</button>`}`;
   const btn=div.querySelector("button");
   if(btn)btn.onclick=()=>buySkin(s);
   $("skinList").appendChild(div);
@@ -372,11 +462,17 @@ function renderSeasons(){
  $("seasonList").innerHTML="";
  seasons.forEach(s=>{
   const owned=data.seasons.includes(s.id),selected=data.season===s.id;
-  const div=document.createElement("div");div.className="item";
+  const div=document.createElement("div");
+  div.className="neon-card"+(selected?" equipped":"");
+  div.style.setProperty("--c",s.color);
+  const priceText=s.price===0?"FREE":owned?"OWNED":s.price.toLocaleString()+" SHARDS";
+  const priceClass=s.price===0?"free":owned?"owned":"";
   div.innerHTML=`
-   <div class="skin-preview" style="background:${s.bg};border-color:${s.platform}"></div>
-   <h3>${s.name}</h3><p>${s.price===0?"Free":s.price.toLocaleString()+" shards"}</p>
-   <button>${selected?"ACTIVE":owned?"SELECT":"UNLOCK"}</button>`;
+   <div class="season-preview" style="background:${s.bg}"></div>
+   <h3 class="neon-name">${s.name.toUpperCase()}</h3>
+   <div class="neon-rarity">${s.rarity}</div>
+   <div class="neon-price ${priceClass}">${priceText}</div>
+   <button class="neon-btn${selected?" on":""}">${selected?"ACTIVE":owned?"SELECT":"UNLOCK"}</button>`;
   div.querySelector("button").onclick=()=>{
    if(!owned){
     if(data.shards<s.price){toast("Not enough shards!");return}
@@ -476,6 +572,20 @@ let score=0,distance=0,runShardCount=0,frame=0;
 let lastTime=0,accumulator=0;
 const STEP=1000/60;
 let attackTimer=0,oneHit=0,shield=0;
+let azureTrail=[];
+const TRAIL_LIFE=28;
+
+// Shard reward per enemy type (given once when the enemy is fully defeated)
+const ENEMY_SHARDS={red:49,brown:99,black:199};
+function rewardEnemyShards(e){
+ if(e.rewarded)return;
+ e.rewarded=true;
+ const amount=ENEMY_SHARDS[e.type]||0;
+ if(!amount)return;
+ runShardCount+=amount;
+ $("runShards").textContent=runShardCount;
+ toast("+"+amount+" SHARDS");
+}
 
 addEventListener("keydown",e=>{
  if(remap){
@@ -552,7 +662,7 @@ function worldColor(){return seasons.find(s=>s.id===data.season)?.bg||"#100b20"}
 function makeEnemy(x,y,width){
  const r=Math.random();
  const type=r<.55?"red":r<.80?"brown":"black";
- return {type,x:x+width/2,y:y-32,w:30,h:32,hp:type==="black"?3:2,alive:true,vx:.65,vy:0,minX:x+5,maxX:x+width-35};
+ return {type,x:x+width/2,y:y-32,w:30,h:32,hp:type==="black"?3:2,alive:true,vx:.65,vy:0,minX:x+5,maxX:x+width-35,rewarded:false};
 }
 
 function startGame(){
@@ -562,7 +672,7 @@ function startGame(){
 
  score=0;distance=0;runShardCount=0;camera=0;frame=0;
  attackTimer=0;oneHit=0;shield=0;
- lasers=[];particles=[];
+ lasers=[];particles=[];azureTrail=[];
 
  const startY=Math.min(H*.68,H-130);
  player={x:90,y:startY-38,w:28,h:38,vx:0,vy:0,grounded:true,facing:1,hp:3,invuln:0};
@@ -654,6 +764,13 @@ function update(){
  }
 
  if(player.x<camera+25)player.x=camera+25;
+
+ // Azure animated trail (visual only)
+ if(data.selected==="secretblue"){
+  azureTrail.push({x:player.x+player.w/2,y:player.y+player.h-12,life:TRAIL_LIFE});
+ }
+ azureTrail.forEach(t=>t.life--);
+ azureTrail=azureTrail.filter(t=>t.life>0);
  camera=Math.max(0,player.x-W*.32);
  distance=Math.max(distance,player.x/10000);
  score=Math.max(score,Math.floor(player.x/10));
@@ -671,7 +788,7 @@ function update(){
      vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4,
      color:l.color,life:18
     });
-    if(e.hp<=0){e.alive=false;score+=100}
+    if(e.hp<=0){e.alive=false;score+=100;rewardEnemyShards(e)}
    }
   }
  }
@@ -794,12 +911,19 @@ function draw(){
 
  const skin=[...defaultSkins,...getCustomSkins()].find(s=>s.id===data.selected)||defaultSkins[0];
 
- // Azure trail
- if(data.selected==="secretblue"){
-  for(let i=0;i<6;i++){
-   ctx.globalAlpha=.10+i*.07;
-   ctx.fillStyle="#20aaff";ctx.shadowColor="#168dff";ctx.shadowBlur=20;
-   ctx.fillRect(player.x-18-i*13,player.y+7,13,24);
+ // Azure animated flowing trail
+ if(data.selected==="secretblue"&&azureTrail.length){
+  const cols=["#168dff","#27baff","#6fd6ff"];
+  for(let i=0;i<azureTrail.length;i++){
+   const t=azureTrail[i],k=t.life/TRAIL_LIFE;
+   const wob=Math.sin(frame*.28+i*.7)*5*(1-k);
+   ctx.globalAlpha=k*.6;
+   ctx.fillStyle=cols[i%3];ctx.shadowColor="#27baff";ctx.shadowBlur=18;
+   ctx.beginPath();ctx.ellipse(t.x,t.y+wob,4+11*k,3+8*k,0,0,Math.PI*2);ctx.fill();
+   if((frame+i)%9<4&&i%3===0){
+    ctx.globalAlpha=k;ctx.shadowBlur=8;ctx.fillStyle="#ffffff";
+    ctx.fillRect(t.x-2+Math.sin(i*2.3)*9,t.y-12-(1-k)*14,3,3);
+   }
   }
   ctx.globalAlpha=1;ctx.shadowBlur=0;
  }
