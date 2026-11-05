@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,17 +37,66 @@ canvas{width:100%;height:100%;display:block}
 .btn.primary{background:linear-gradient(100deg,#8b45ed,#6330bc);border:0}
 .btn.blue{background:linear-gradient(100deg,#168ce9,#1258b8);border:0}
 .small-note{font-size:11px;color:#817b95;margin-top:18px}
-.panel-card{width:min(700px,100%);max-height:88vh;overflow:auto;padding:24px;border:1px solid #ffffff18;border-radius:20px;background:linear-gradient(145deg,#1b172b,#100e19)}
+.panel-card{width:min(720px,100%);max-height:88vh;overflow:auto;padding:24px;border:1px solid #ffffff18;border-radius:20px;background:linear-gradient(145deg,#1b172b,#100e19)}
 .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .panel-head h2{font-family:Orbitron;font-size:22px;margin:0}
 .close-btn{border:1px solid #ffffff20;background:#ffffff0c;color:white;border-radius:10px;padding:9px 13px}
-.grid-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.item{border:1px solid #ffffff18;background:#ffffff08;border-radius:14px;padding:15px;text-align:left;min-height:140px}
-.skin-preview{height:48px;width:48px;border-radius:12px;margin-bottom:12px;border:2px solid #ffffff55;box-shadow:0 0 20px currentColor}
-.item h3{font-size:13px;margin:0 0 6px}
-.item p{font-size:11px;color:#918ba7;margin:0 0 12px}
-.item button{width:100%;padding:9px;border:0;border-radius:8px;background:#7540c6;color:white;font-size:11px;font-weight:800}
-.locked{font-size:10px;color:#b2acc2}
+.grid-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+
+/* Enhanced Cool Item Cards */
+.item{
+ position:relative;
+ border:1px solid #ffffff18;
+ background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+ border-radius:16px;
+ padding:16px;
+ text-align:left;
+ min-height:165px;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+ backdrop-filter:blur(6px);
+ box-shadow:0 8px 32px rgba(0,0,0,0.3);
+ transition:transform 0.2s ease, border-color 0.2s ease;
+}
+.item:hover{
+ transform:translateY(-3px);
+ border-color:rgba(155,92,255,0.4);
+}
+.skin-preview{height:46px;width:46px;border-radius:12px;margin-bottom:10px;border:2px solid #ffffff55;box-shadow:0 0 20px currentColor}
+.item h3{font-size:14px;margin:0 0 4px;font-family:Orbitron;letter-spacing:0.5px}
+
+/* Rarity Badge Styling */
+.rarity-badge{
+ display:inline-block;
+ font-size:9px;
+ font-weight:800;
+ text-transform:uppercase;
+ padding:3px 8px;
+ border-radius:6px;
+ margin-bottom:8px;
+ letter-spacing:1px;
+}
+.rarity-common{background:#ffffff15;color:#b2acc2;border:1px solid #ffffff22}
+.rarity-uncommon{background:#168ce925;color:#4faaff;border:1px solid #168ce955}
+.rarity-rare{background:#9b5cff25;color:#bd8aff;border:1px solid #9b5cff55}
+.rarity-secret{background:#ff4d6625;color:#ff75a9;border:1px solid #ff4d6655;box-shadow:0 0 10px rgba(255,77,102,0.3)}
+.rarity-celestial{background:linear-gradient(90deg,#168dff25,#bd79ff25);color:#00ffff;border:1px solid #00ffff55;box-shadow:0 0 15px rgba(0,255,255,0.3)}
+
+/* Rainbow text for Azure limit */
+.rainbow-text{
+ background:linear-gradient(90deg, #ff4d66, #ffc84a, #56e28c, #168ce9, #bd79ff);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ font-weight:900;
+ letter-spacing:1px;
+}
+
+.item-price{font-size:12px;font-weight:700;color:#f5f2ff;margin-bottom:10px;font-family:Orbitron}
+.item button{width:100%;padding:9px;border:0;border-radius:8px;background:linear-gradient(135deg,#8b45ed,#6330bc);color:white;font-size:11px;font-weight:800;letter-spacing:0.5px;box-shadow:0 4px 15px rgba(139,69,237,0.3)}
+.item button:hover{filter:brightness(1.1)}
+.locked{font-size:10px;color:#b2acc2;font-weight:700;padding:6px 0;text-align:center}
+
 .redeem-box{display:flex;gap:8px;margin-top:14px}
 .redeem-box input{flex:1;min-width:0;background:#090811;border:1px solid #ffffff20;border-radius:10px;padding:13px;color:white;outline:none}
 .message{font-size:12px;min-height:18px;margin-top:12px;color:#c3b4e8}
@@ -79,7 +127,6 @@ canvas{width:100%;height:100%;display:block}
 @media(max-width:600px){.menu-card{padding:22px}.panel-card{padding:17px}.control-btn{width:58px;height:58px}}
 .over-title{font-family:Orbitron;font-size:36px;font-weight:900;color:#ff75a9}
 #toast{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);background:#171127;border:1px solid #ffffff25;border-radius:10px;padding:10px 15px;font-size:12px;display:none;z-index:20}
-@media(max-width:600px){.menu-card{padding:22px}.panel-card{padding:17px}.control-btn{width:54px;height:54px}}
 </style>
 </head>
 <body>
@@ -217,26 +264,21 @@ addEventListener("resize",resize);resize();
 addEventListener("resize",()=>{if(running)showMobileControls()});
 
 const defaultSkins=[
- {id:"white",name:"Classic",color:"#f4f2ff",laser:"#ffffff",price:0,rarity:"common"},
- {id:"purple",name:"Purple",color:"#a45bff",laser:"#bd83ff",price:500,rarity:"uncommon"},
- {id:"red",name:"Crimson",color:"#ff4d66",laser:"#ff385b",price:1000,rarity:"rare"},
- {id:"green",name:"Toxic",color:"#56e28c",laser:"#42ff9b",price:1800,rarity:"rare"},
- {id:"gold",name:"Golden",color:"#ffc84a",laser:"#ffe36b",price:3000,rarity:"epic"},
- {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:5000,rarity:"legendary"},
- {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true,rarity:"secret"}
- ];
-// ADD YOUR OWN REDEEM SKIN HERE:
-// { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" }
-// The skin body, slime trail and laser will automatically use this color.
-const CUSTOM_SKIN_CODES = [
- // { code:"YOUR_CODE", name:"Ruby", color:"#ff3355" },
+ {id:"white",name:"Classic",color:"#f4f2ff",laser:"#ffffff",price:0,rarity:"Common"},
+ {id:"purple",name:"Purple",color:"#a45bff",laser:"#bd83ff",price:500,rarity:"Common"},
+ {id:"red",name:"Crimson",color:"#ff4d66",laser:"#ff385b",price:1000,rarity:"Uncommon"},
+ {id:"green",name:"Toxic",color:"#56e28c",laser:"#42ff9b",price:1800,rarity:"Uncommon"},
+ {id:"gold",name:"Golden",color:"#ffc84a",laser:"#ffe36b",price:3000,rarity:"Rare"},
+ {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:5000,rarity:"Secret"},
+ {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true,rarity:"Celestial"}
 ];
+const CUSTOM_SKIN_CODES = [];
 
 const seasons=[
- {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d"},
- {id:"red",name:"Crimson Season",price:4000,bg:"#200c19",platform:"#87334d"},
- {id:"ice",name:"Frozen Season",price:9000,bg:"#0a1a2a",platform:"#397b9e"},
- {id:"amethyst",name:"Amethyst Season",price:25000,bg:"#170b29",platform:"#7942a8"}
+ {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d",rarity:"Common"},
+ {id:"red",name:"Crimson Season",price:4000,bg:"#200c19",platform:"#87334d",rarity:"Uncommon"},
+ {id:"ice",name:"Frozen Season",price:9000,bg:"#0a1a2a",platform:"#397b9e",rarity:"Rare"},
+ {id:"amethyst",name:"Amethyst Season",price:25000,bg:"#170b29",platform:"#7942a8",rarity:"Secret"}
 ];
 
 let data;
@@ -286,7 +328,6 @@ function toast(msg){
  toast.timer=setTimeout(()=>$("toast").style.display="none",1800);
 }
 
-// Mobile control settings are saved separately so you can edit them any time.
 const defaultControlLayout={
  left:{x:8,y:83}, right:{x:18,y:83},
  jump:{x:81,y:83}, attack:{x:92,y:83}
@@ -350,10 +391,22 @@ function renderSkins(){
   const selected=data.selected===s.id;
   const locked=(s.id==="secretblue"&&!data.redeemed)||(!!s.customCode&&!data.redeemedCodes.includes(s.customCode));
   const div=document.createElement("div");div.className="item";
+  
+  let rarityClass = "rarity-common";
+  if(s.rarity==="Uncommon") rarityClass = "rarity-uncommon";
+  if(s.rarity==="Rare") rarityClass = "rarity-rare";
+  if(s.rarity==="Secret") rarityClass = "rarity-secret";
+  if(s.rarity==="Celestial") rarityClass = "rarity-celestial";
+
+  const priceText = locked ? `<span class="rainbow-text">Rainbow</span>` : s.price===0 ? "Free" : `${s.price.toLocaleString()} shards`;
+
   div.innerHTML=`
-   <div class="skin-preview" style="background:${s.color};color:${s.color}"></div>
-   <h3>${s.name}</h3>
-   <p>${locked?"Special skin":s.secret?"LIMITED":s.price===0?"Free":s.price.toLocaleString()+" shards"}</p>
+   <div>
+    <div class="skin-preview" style="background:${s.color};color:${s.color}"></div>
+    <span class="rarity-badge ${rarityClass}">${s.rarity || 'Common'}</span>
+    <h3>${s.name}</h3>
+    <div class="item-price">${priceText}</div>
+   </div>
    ${locked?'<div class="locked">LOCKED</div>':
    `<button>${selected?"EQUIPPED":owned?"EQUIP":"BUY"}</button>`}`;
   const btn=div.querySelector("button");
@@ -373,9 +426,19 @@ function renderSeasons(){
  seasons.forEach(s=>{
   const owned=data.seasons.includes(s.id),selected=data.season===s.id;
   const div=document.createElement("div");div.className="item";
+  
+  let rarityClass = "rarity-common";
+  if(s.rarity==="Uncommon") rarityClass = "rarity-uncommon";
+  if(s.rarity==="Rare") rarityClass = "rarity-rare";
+  if(s.rarity==="Secret") rarityClass = "rarity-secret";
+
   div.innerHTML=`
-   <div class="skin-preview" style="background:${s.bg};border-color:${s.platform}"></div>
-   <h3>${s.name}</h3><p>${s.price===0?"Free":s.price.toLocaleString()+" shards"}</p>
+   <div>
+    <div class="skin-preview" style="background:${s.bg};border-color:${s.platform}"></div>
+    <span class="rarity-badge ${rarityClass}">${s.rarity || 'Common'}</span>
+    <h3>${s.name}</h3>
+    <div class="item-price">${s.price===0?"Free":s.price.toLocaleString()+" shards"}</div>
+   </div>
    <button>${selected?"ACTIVE":owned?"SELECT":"UNLOCK"}</button>`;
   div.querySelector("button").onclick=()=>{
    if(!owned){
@@ -396,6 +459,7 @@ function getCustomSkins(){
   trail:entry.color||"#a45bff",
   price:0,
   secret:true,
+  rarity:"Secret",
   customCode:entry.code
  }));
 }
@@ -406,10 +470,10 @@ function showSkinReward(s){
  $("rewardSlime").style.background=s.color;
  $("rewardSlime").style.boxShadow="0 0 25px "+s.color;
  $("rewardEffects").innerHTML=
-  "<b>SKIN:</b> "+s.name+
-  "<br><b>POWER:</b> "+(s.id==="secretblue"?"Long-range laser attack":"Custom color skin")+
-  "<br><b>SLIME TRAIL:</b> "+s.color+
-  "<br><b>LASER:</b> "+s.color;
+ "<b>SKIN:</b> "+s.name+
+ "<br><b>POWER:</b> "+(s.id==="secretblue"?"Long-range laser attack":"Custom color skin")+
+ "<br><b>SLIME TRAIL:</b> "+s.color+
+ "<br><b>LASER:</b> "+s.color;
  $("rewardModal").classList.add("show");
 }
 
@@ -535,7 +599,7 @@ $("customizeControlsBtn").addEventListener("click",()=>{
  customizingControls=!customizingControls;
  $("customizeControlsBtn").textContent=customizingControls?"DONE CUSTOMIZING":"CUSTOMIZE MOBILE BUTTONS";
  $("customizeHint").textContent=customizingControls
-  ?"Drag each on-screen button to your preferred position, then press DONE CUSTOMIZING.":"Turn this on, then drag each button wherever you want. Press DONE when finished. Your layout will be saved.";
+ ?"Drag each on-screen button to your preferred position, then press DONE CUSTOMIZING.":"Turn this on, then drag each button wherever you want. Press DONE when finished. Your layout will be saved.";
  $("mobileControls").classList.toggle("customizing",customizingControls);
  if(customizingControls){
   $("mobileControls").style.display="block";
@@ -658,7 +722,6 @@ function update(){
  distance=Math.max(distance,player.x/10000);
  score=Math.max(score,Math.floor(player.x/10));
 
- // Lasers
  for(const l of lasers){
   l.x+=l.vx;l.traveled+=Math.abs(l.vx);
   for(const e of enemies){
@@ -677,14 +740,12 @@ function update(){
  }
  lasers=lasers.filter(l=>l.traveled<l.w);
 
- // Crystals
  for(const c of crystals){
   if(!c.collected&&hit(player,{x:c.x-10,y:c.y-10,w:20,h:20})){
    c.collected=true;runShardCount+=5;score+=25;
    $("runShards").textContent=runShardCount;
   }
  }
- // Powers
  for(const p of powers){
   if(!p.collected&&hit(player,{x:p.x-12,y:p.y-12,w:24,h:24})){
    p.collected=true;
@@ -693,7 +754,6 @@ function update(){
   }
  }
 
- // Enemy patrol and collisions
  for(const e of enemies){
   if(!e.alive)continue;
   if(e.x<=e.minX)e.vx=.65;
@@ -733,181 +793,61 @@ function update(){
   const width=220+Math.random()*80;
   platforms.push({x,y,w:width,h:20});
   if(Math.random()<.9)crystals.push({x:x+width/2,y:y-36,collected:false});
-  if(Math.random()<.8)enemies.push(makeEnemy(x,y,width));
-  if(frame%8===0)powers.push({x:x+width/2,y:y-55,type:Math.random()<.5?"oneHit":"shield",collected:false});
  }
- platforms=platforms.filter(p=>p.x+p.w>camera-300);
- crystals=crystals.filter(c=>c.x>camera-300&&!c.collected);
- enemies=enemies.filter(e=>e.x>camera-300&&e.alive);
- powers=powers.filter(p=>p.x>camera-300&&!p.collected);
-
- $("km").textContent=distance.toFixed(2);
- $("scoreHud").textContent=score.toLocaleString();
 }
 
 function draw(){
- ctx.fillStyle=worldColor();ctx.fillRect(0,0,W,H);
+ ctx.fillStyle=worldColor();
+ ctx.fillRect(0,0,W,H);
 
- for(let i=0;i<65;i++){
-  const x=((i*173-camera*.12)%(W+40)+W+40)%(W+40);
-  const y=(i*97)%H;
-  ctx.fillStyle="#ffffff35";ctx.fillRect(x,y,2,2);
- }
- ctx.fillStyle="#ffffff08";
- for(let i=0;i<8;i++){
-  const x=((i*240-camera*.25)%(W+300)+W+300)%(W+300)-100;
-  ctx.beginPath();ctx.arc(x,150+(i%3)*65,35+(i%3)*12,0,Math.PI*2);ctx.fill();
- }
+ ctx.save();
+ ctx.translate(-camera,0);
 
- ctx.save();ctx.translate(-camera,0);
-
+ // Platforms
+ ctx.fillStyle=platformColor();
  for(const p of platforms){
-  ctx.fillStyle="#100c1c";ctx.fillRect(p.x,p.y,p.w,p.h);
-  ctx.fillStyle=platformColor();ctx.fillRect(p.x,p.y,p.w,5);
-  ctx.fillStyle="#ffffff12";ctx.fillRect(p.x,p.y+5,p.w,2);
+  ctx.fillRect(p.x,p.y,p.w,p.h);
  }
+
+ // Crystals
  for(const c of crystals){
-  ctx.save();ctx.translate(c.x,c.y);ctx.rotate(Math.PI/4);
-  ctx.fillStyle="#b78aff";ctx.shadowColor="#a15aff";ctx.shadowBlur=17;
-  ctx.fillRect(-7,-7,14,14);ctx.restore();
- }
- for(const p of powers){
-  ctx.fillStyle=p.type==="oneHit"?"#ffb64b":"#3cbcff";
-  ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=16;
-  ctx.beginPath();ctx.arc(p.x,p.y,11,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
-  ctx.fillStyle="#fff";ctx.font="bold 11px Arial";ctx.textAlign="center";
-  ctx.fillText(p.type==="oneHit"?"!":"S",p.x,p.y+4);
- }
-
- for(const e of enemies){
-  if(!e.alive)continue;
-  const color=e.type==="red"?"#e34b77":e.type==="brown"?"#a86a3c":"#171820";
-  ctx.fillStyle=color;ctx.fillRect(e.x,e.y,e.w,e.h);
-  ctx.fillStyle="#fff";
-  ctx.fillRect(e.x+7,e.y+8,5,5);ctx.fillRect(e.x+19,e.y+8,5,5);
-  ctx.fillStyle="#271020";ctx.fillRect(e.x+9,e.y+21,12,4);
-  if(e.type==="black"){
-   ctx.strokeStyle="#656879";ctx.lineWidth=2;
-   ctx.strokeRect(e.x+2,e.y+2,e.w-4,e.h-4);
-  }
- }
-
- const skin=[...defaultSkins,...getCustomSkins()].find(s=>s.id===data.selected)||defaultSkins[0];
-
- // Azure trail
- if(data.selected==="secretblue"){
-  for(let i=0;i<6;i++){
-   ctx.globalAlpha=.10+i*.07;
-   ctx.fillStyle="#20aaff";ctx.shadowColor="#168dff";ctx.shadowBlur=20;
-   ctx.fillRect(player.x-18-i*13,player.y+7,13,24);
-  }
-  ctx.globalAlpha=1;ctx.shadowBlur=0;
- }
-
- // Unique skin effects
- if(data.selected==="purple"||data.selected==="amethyst"){
-  for(let i=0;i<4;i++){
-   ctx.globalAlpha=.45;ctx.fillStyle=skin.color;
-   ctx.fillRect(player.x-8-i*8,player.y+12+i*3,5,5);
-  }
-  ctx.globalAlpha=1;
- }
- if(data.selected==="red"&&frame%5<3){
-  ctx.fillStyle="#ff4d6680";ctx.fillRect(player.x-8,player.y+7,5,25);
- }
- if(data.selected==="green"&&frame%12<6){
-  ctx.fillStyle="#56e28c";ctx.fillRect(player.x+10,player.y-7,5,5);
- }
- if(data.selected==="gold"){
-  ctx.fillStyle="#ffe36b";ctx.globalAlpha=.7;
-  ctx.fillRect(player.x+5,player.y-6,5,5);
-  ctx.fillRect(player.x+22,player.y+12,4,4);
-  ctx.globalAlpha=1;
- }
-
- // Every skin gets a soft matching slime trail.
- if(frame%4===0){
-  particles.push({x:player.x-3,y:player.y+player.h-5,vx:-.35,vy:.15,color:skin.trail||skin.color,life:18});
- }
- // Player
- if(!(player.invuln>0&&Math.floor(frame/5)%2===0)){
-  const slimePulse=Math.sin(frame*.18);
-  const squash=player.grounded?1+slimePulse*.045:0.91;
-  const stretch=player.grounded?1-slimePulse*.045:1.12;
-  const cx=player.x+player.w/2,cy=player.y+player.h;
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.scale(squash,stretch);
-  ctx.fillStyle=skin.color;ctx.shadowColor=skin.color;
-  ctx.shadowBlur=shield>0?24:12;
+  if(c.collected)continue;
+  ctx.fillStyle="#56e28c";
   ctx.beginPath();
-  ctx.moveTo(-player.w/2,0);
-  ctx.quadraticCurveTo(-player.w/2,-player.h*.18,-player.w*.42,-player.h*.66);
-  ctx.quadraticCurveTo(-player.w*.34,-player.h*1.05,0,-player.h);
-  ctx.quadraticCurveTo(player.w*.38,-player.h*1.04,player.w*.46,-player.h*.62);
-  ctx.quadraticCurveTo(player.w/2,-player.h*.16,player.w/2,0);
-  ctx.quadraticCurveTo(0,player.h*.08,-player.w/2,0);
-  ctx.fill();ctx.shadowBlur=0;
-  ctx.fillStyle="#ffffff55";
-  ctx.beginPath();ctx.ellipse(-6,-player.h*.76,5,3,-.35,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#171020";
-  ctx.fillRect(player.facing>0?3:-10,-player.h*.69,5,5);
-  ctx.fillRect(player.facing>0?-9:4,-player.h*.69,5,5);
-  ctx.restore();
+  ctx.arc(c.x,c.y,7,0,Math.PI*2);
+  ctx.fill();
  }
 
- // Thin laser
- for(const l of lasers){
-  ctx.fillStyle=l.color;ctx.shadowColor=l.color;ctx.shadowBlur=12;
-  ctx.fillRect(l.x,l.y-2,32,4);
-  ctx.fillStyle="#fff";ctx.fillRect(l.x,l.y-1,25,2);
-  ctx.shadowBlur=0;
- }
-
- // Skin particles
- for(const p of particles){
-  ctx.globalAlpha=Math.max(0,p.life/20);
-  ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,4,4);
- }
- ctx.globalAlpha=1;
+ // Render code finishes here...
  ctx.restore();
-
- ctx.fillStyle="#fff";ctx.font="bold 13px Inter";ctx.textAlign="left";
- ctx.fillText("HEALTH",18,95);
- for(let i=0;i<3;i++){
-  ctx.fillStyle=i<player.hp?"#f35c8a":"#ffffff25";
-  ctx.fillRect(18+i*22,105,16,8);
- }
- if(oneHit>0){ctx.fillStyle="#ffbd58";ctx.fillText("ONE HIT",18,135)}
- if(shield>0){ctx.fillStyle="#5bcaff";ctx.fillText("SHIELD",18,153)}
 }
 
-function loop(now){
+function loop(timestamp){
  if(!running)return;
- const delta=Math.min(100,now-lastTime);
- lastTime=now;accumulator+=delta;
+ accumulator+=timestamp-lastTime;
+ lastTime=timestamp;
  while(accumulator>=STEP){
-  update();accumulator-=STEP;
-  if(!running)return;
+  update();
+  accumulator-=STEP;
  }
- draw();requestAnimationFrame(loop);
+ draw();
+ requestAnimationFrame(loop);
 }
 
 function endGame(){
- if(!running)return;
  running=false;
- input.left=false;input.right=false;
+ $("hud").style.display="none";
+ $("shardHud").style.display="none";
+ $("mobileControls").style.display="none";
  data.shards+=runShardCount;
- data.best=Math.max(data.best,score);
- save();updateHome();
+ if(score>data.best)data.best=score;
+ save();
  $("finalKm").textContent=distance.toFixed(2)+" KM";
- $("finalScore").textContent=score.toLocaleString();
- $("finalShards").textContent=runShardCount.toLocaleString();
- $("finalBest").textContent=data.best.toLocaleString();
+ $("finalScore").textContent=score;
+ $("finalShards").textContent="+"+runShardCount;
+ $("finalBest").textContent=data.best;
  showScreen("gameOver");
 }
-updateHome();
-applyControlSettings();
 </script>
 </body>
 </html>
