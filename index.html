@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>RUN SHARDEX</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
 *{box-sizing:border-box}
 body{margin:0;background:#090811;color:#f5f2ff;font-family:Inter,Arial;overflow:hidden}
 button{font:inherit;cursor:pointer}
-#gameWrap{position:relative;width:100vw;height:100vh;overflow:hidden}
+html,body{height:100%;width:100%;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+body{position:fixed;inset:0}
+#gameWrap{position:fixed;inset:0;width:100%;height:100%;overflow:hidden}
 canvas{width:100%;height:100%;display:block}
 .screen{
  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
@@ -271,6 +273,80 @@ canvas{width:100%;height:100%;display:block}
 .neon-card.rainbow:hover .slime-preview{animation:slimeJump .8s cubic-bezier(.3,.7,.4,1) infinite}
 .neon-card.rainbow .scene-preview svg{animation:none}
 .slime-preview{will-change:transform}
+
+/* ===== V8 LOBBY / SETTINGS / EDITOR ===== */
+#home{padding:0;overflow:hidden;align-items:stretch;justify-content:stretch}
+.lobby{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;gap:8px 14px;
+ padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.lobby-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.player-chip{display:flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:999px;background:#ffffff0d;border:1px solid #ffffff1c}
+.chip-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(145deg,#3a2a66,#1a1330);display:grid;place-items:center;overflow:hidden;border:2px solid #9b5cff88}
+.chip-avatar svg{width:80%;height:80%;display:block}
+.chip-name{font-family:Orbitron;font-weight:800;font-size:12px;letter-spacing:2px}
+.chip-sub{font-size:10px;color:#a9a2bd;letter-spacing:1.5px}
+.chip-sub b{color:#ffd24a}
+.top-right{display:flex;align-items:center;gap:10px}
+.currency{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:linear-gradient(90deg,#ffffff0e,#ffffff05);border:1px solid #ffffff1c;font-family:Orbitron;font-weight:800;font-size:14px}
+.currency .gem{color:#7ad7ff}
+.icon-btn{width:44px;height:44px;border-radius:14px;border:1px solid #ffffff22;background:linear-gradient(160deg,#ffffff12,#ffffff05);color:#fff;font-size:22px;line-height:1;display:grid;place-items:center;transition:.2s}
+.icon-btn:hover{border-color:#9b5cff99;box-shadow:0 0 18px #9b5cff55;transform:rotate(40deg)}
+.lobby-left{grid-column:1;grid-row:2;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.side-btn{display:flex;flex-direction:column;align-items:center;gap:5px;width:clamp(62px,9vw,86px);padding:11px 4px;border-radius:16px;background:linear-gradient(160deg,#ffffff12,#ffffff05);border:1px solid #ffffff1f;color:#fff;font-size:10px;font-weight:800;letter-spacing:1.5px;transition:.2s}
+.side-btn .ico{font-size:22px;color:#c9a8ff}
+.side-btn:hover{border-color:#9b5cffaa;box-shadow:0 0 20px #9b5cff44;transform:translateX(4px)}
+.lobby-center{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
+.lobby-logo{font-family:Orbitron;font-weight:900;font-size:clamp(22px,4.2vw,40px);letter-spacing:3px;text-shadow:0 0 24px #9b5cff99;margin-bottom:4px;white-space:nowrap}
+.lobby-logo span{color:#9b5cff}
+.hero{height:min(44vh,310px);aspect-ratio:36/50;filter:drop-shadow(0 0 26px #9b5cff88);animation:mascotBob 2.4s ease-in-out infinite;transform-origin:50% 100%}
+.hero svg,.chip-avatar svg{width:100%;height:100%;display:block;overflow:visible}
+.hero-floor{width:min(46vh,270px);height:28px;border-radius:50%;background:radial-gradient(ellipse,#9b5cff77,transparent 70%);margin-top:-14px}
+.lobby-events{grid-column:3;grid-row:2;display:flex;flex-direction:column;justify-content:center;gap:9px;width:clamp(150px,22vw,230px)}
+.ev-head{font-size:10px;letter-spacing:3px;color:#a9a2bd;font-weight:800;padding-left:4px}
+.event-card{display:block;width:100%;text-align:left;padding:11px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--ec) 55%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--ec) 26%,#14111f),#0d0b16);color:#fff;transition:.2s}
+.event-card:hover{transform:translateX(-4px);border-color:var(--ec);box-shadow:0 0 22px color-mix(in srgb,var(--ec) 45%,transparent)}
+.event-card .limited-tag{display:inline-block;margin:0 0 6px;font-size:9px}
+.ev-tag{display:inline-block;margin-bottom:6px;padding:3px 8px;border-radius:6px;background:var(--ec);color:#111;font-size:9px;font-weight:900;letter-spacing:2px}
+.ev-title{font-family:Orbitron;font-weight:800;font-size:12px;letter-spacing:1px}
+.ev-sub{font-size:9px;color:#b8b0cc;letter-spacing:1.5px;margin-top:3px}
+.lobby-bottom{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.lobby-hint{font-size:10px;letter-spacing:3px;color:#7f7899;font-weight:700}
+.play-wrap{filter:drop-shadow(0 0 18px #ff9a2e88)}
+.play-big{position:relative;overflow:hidden;min-width:clamp(190px,26vw,290px);height:clamp(54px,9vh,72px);padding:0 30px;border:0;border-radius:0;font-family:Orbitron;font-weight:900;font-size:clamp(18px,3vw,26px);letter-spacing:6px;color:#2a1400;background:linear-gradient(100deg,#ffd24a,#ff9a2e);clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%);transition:transform .15s}
+.play-big:hover{transform:scale(1.04)}
+.play-big:active{transform:scale(.97)}
+.play-big::after{content:"";position:absolute;top:0;bottom:0;left:0;width:35%;background:linear-gradient(100deg,transparent,#ffffffaa,transparent);transform:translateX(-150%) skewX(-20deg);animation:btnShine2 3s ease-in-out infinite}
+@media(max-width:560px){.lobby-events{display:none}.lobby-hint{display:none}.lobby-bottom{justify-content:flex-end}}
+@media(max-height:430px){.lobby-logo{display:none}.hero{height:min(56vh,230px)}.side-btn{padding:7px 4px}.side-btn .ico{font-size:18px}.ev-sub{display:none}.event-card{padding:8px 12px}.lobby{gap:4px 12px}}
+/* settings */
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{flex:1;padding:11px;border-radius:12px;border:1px solid #ffffff1c;background:#ffffff08;color:#b8b0cc;font-weight:800;letter-spacing:2px;font-size:12px}
+.tab.active{background:linear-gradient(100deg,#8b45ed,#6330bc);color:#fff;border-color:transparent;box-shadow:0 0 20px #8b45ed55}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.vol-row{padding:14px;border:1px solid #ffffff16;border-radius:14px;background:#ffffff07;margin-bottom:12px}
+.vol-row label{display:flex;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:1.5px;margin-bottom:12px}
+.vol-row input[type=range],.ce-row input[type=range]{width:100%;accent-color:#9b5cff}
+/* control editor */
+#controlEditor{padding:0;overflow:hidden;align-items:stretch;justify-content:stretch;z-index:40;background:#07060d}
+#controlEditor::before,#controlEditor::after{display:none}
+#controlEditor>*{position:absolute}
+.ce-stage{inset:0;background-image:radial-gradient(#ffffff16 1px,transparent 1px);background-size:26px 26px}
+.ce-top{top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:max(10px,env(safe-area-inset-top)) 16px 10px;z-index:3;background:linear-gradient(#000c,transparent)}
+.ce-title{font-family:Orbitron;font-weight:800;letter-spacing:2px;font-size:14px}
+.ce-hint{top:58px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:2px;color:#a9a2bd;text-align:center;pointer-events:none;width:92%;z-index:2}
+.ce-panel{left:50%;top:84px;transform:translateX(-50%);width:min(340px,92%);padding:12px 14px;border-radius:16px;background:#14102af2;border:1px solid #9b5cff66;z-index:3;box-shadow:0 10px 40px #000a}
+.ce-name{font-family:Orbitron;font-weight:800;letter-spacing:2px;font-size:12px;color:#c9a8ff;margin-bottom:8px}
+.ce-row label{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:1.5px;margin:6px 0 4px}
+.ce-btn{cursor:grab;z-index:2}
+.ce-btn.sel{outline:2px solid #bd8aff;outline-offset:4px;box-shadow:0 0 24px #9b5cff}
+/* control buttons: icons */
+.control-btn svg{width:56%;height:56%;pointer-events:none;display:block;margin:auto}
+#attackBtn,#ce_attack{background:#3a1420d9;border-color:#ff7a9a99;color:#ffd9e3}
+#jumpBtn,#ce_jump{border-color:#6fd6ff88}
+/* rotate hint */
+#rotateHint{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#090811f5;font-family:Orbitron;letter-spacing:3px;font-size:14px;text-align:center}
+.rot-phone{font-size:54px;animation:rotWiggle 1.6s ease-in-out infinite}
+@keyframes rotWiggle{0%,100%{transform:rotate(0)}50%{transform:rotate(90deg)}}
+@media (orientation:portrait) and (max-width:900px){body.playing #rotateHint{display:flex}}
 </style>
 </head>
 <body>
@@ -286,12 +362,13 @@ canvas{width:100%;height:100%;display:block}
 <div id="shardHud">SHARDS: <span id="runShards">0</span></div>
 
 <div id="mobileControls">
- <button class="control-btn" id="leftBtn" aria-label="Move left">A</button>
- <button class="control-btn" id="rightBtn" aria-label="Move right">D</button>
- <button class="control-btn" id="jumpBtn" aria-label="Jump">↑</button>
- <button class="control-btn" id="attackBtn" aria-label="Fire">F</button>
+ <button class="control-btn" id="leftBtn" aria-label="Move left"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+ <button class="control-btn" id="rightBtn" aria-label="Move right"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+ <button class="control-btn" id="jumpBtn" aria-label="Jump"><svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+ <button class="control-btn" id="attackBtn" aria-label="Attack"><svg viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><path d="M12 1.2L14.4 5V14H9.6V5Z" fill="currentColor"/><path d="M12 3.2V13" stroke="#fff" stroke-opacity=".55" stroke-width=".9" stroke-linecap="round"/><rect x="6.2" y="14" width="11.6" height="2.2" rx="1.1" fill="currentColor"/><rect x="10.9" y="16.2" width="2.2" height="4.2" fill="currentColor"/><circle cx="12" cy="21.4" r="1.5" fill="currentColor"/></g></svg></button>
 </div>
 <div id="toast"></div>
+<div id="rotateHint"><div class="rot-phone">&#128241;</div>ROTATE YOUR DEVICE<div style="font-size:11px;color:#a9a2bd;letter-spacing:2px">PLAY IN LANDSCAPE MODE</div></div>
 <div id="rewardModal">
  <div class="reward-card">
   <div class="reward-check">✓</div>
@@ -304,24 +381,37 @@ canvas{width:100%;height:100%;display:block}
 </div>
 
 <section class="screen active" id="home">
- <div class="menu-card home-card">
-  <div class="mascot" id="homeMascot"></div>
-  <div class="logo">RUN <span>SHARDEX</span></div>
-  <div class="subtitle">ENDLESS PLATFORM RUNNER</div>
-  <div class="stats-row">
-   <div class="stat-box"><div class="stat-label">Your Shards</div><div class="stat-value" id="homeShards">2000</div></div>
-   <div class="stat-box"><div class="stat-label">Highest Score</div><div class="stat-value" id="homeBest">0</div></div>
-  </div>
-  <div class="menu-buttons">
-   <button class="btn primary play-btn" onclick="startGame()">&#9654; PLAY GAME</button>
-   <div class="menu-grid">
-    <button class="btn" onclick="openPanel('skins')"><span class="ico">&#9670;</span>SKINS</button>
-    <button class="btn" onclick="openPanel('seasons')"><span class="ico">&#10022;</span>SEASONS</button>
-    <button class="btn" onclick="openPanel('controls')"><span class="ico">&#9881;</span>CONTROLS</button>
-    <button class="btn blue" onclick="openPanel('redeem')"><span class="ico" style="color:#fff">&#10010;</span>REDEEM</button>
+ <div class="lobby">
+  <div class="lobby-top">
+   <div class="player-chip">
+    <div class="chip-avatar" id="chipAvatar"></div>
+    <div class="chip-info"><div class="chip-name">RUNNER</div><div class="chip-sub">BEST SCORE <b id="homeBest">0</b></div></div>
+   </div>
+   <div class="top-right">
+    <div class="currency"><span class="gem">&#9670;</span><b id="homeShards">2000</b></div>
+    <button class="icon-btn" onclick="openPanel('settings')" aria-label="Settings">&#9881;</button>
    </div>
   </div>
-  <div class="small-note">RUN FAR. COLLECT SHARDS. BE THE BEST.</div>
+  <div class="lobby-left">
+   <button class="side-btn" onclick="openPanel('skins')"><span class="ico">&#9670;</span>SKINS</button>
+   <button class="side-btn" onclick="openPanel('seasons')"><span class="ico">&#10022;</span>SEASONS</button>
+   <button class="side-btn" onclick="openPanel('redeem')"><span class="ico">&#10010;</span>REDEEM</button>
+  </div>
+  <div class="lobby-center">
+   <div class="lobby-logo">RUN <span>SHARDEX</span></div>
+   <div class="hero" id="homeMascot"></div>
+   <div class="hero-floor"></div>
+  </div>
+  <div class="lobby-events">
+   <div class="ev-head">EVENTS</div>
+   <button class="event-card" style="--ec:#ff5ad6" onclick="openPanel('seasons')"><span class="limited-tag">LIMITED</span><div class="ev-title">RAINBOW SEASON</div><div class="ev-sub">UNLOCK THE DIVINE SEASON</div></button>
+   <button class="event-card" style="--ec:#27baff" onclick="openPanel('redeem')"><span class="ev-tag">REDEEM</span><div class="ev-title">SECRET CODES</div><div class="ev-sub">CLAIM EXCLUSIVE SKINS</div></button>
+   <button class="event-card" style="--ec:#ff8a2a" onclick="openPanel('skins')"><span class="ev-tag">NEW</span><div class="ev-title">LAVA &amp; TOXIC</div><div class="ev-sub">FRESH SLIME SKINS</div></button>
+  </div>
+  <div class="lobby-bottom">
+   <div class="lobby-hint">RUN FAR. COLLECT SHARDS. BE THE BEST.</div>
+   <div class="play-wrap"><button class="play-big" onclick="startGame()">PLAY</button></div>
+  </div>
  </div>
 </section>
 
@@ -339,29 +429,51 @@ canvas{width:100%;height:100%;display:block}
  </div>
 </section>
 
-<section class="screen" id="controls">
- <div class="panel-card">
-  <div class="panel-head"><h2>CONTROLS</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
-  <p style="color:#aaa1bf;font-size:13px;line-height:1.7">PC / Laptop: <b>D</b> = Right, <b>A</b> = Left, <b>F</b> = Fire, <b>SPACE</b> = Jump. You can remap these keys below.</p>
-  <div id="keyList"></div>
-  <div id="controlsOptions">
-   <div class="control-setting">
-    <label><span>Mobile button size</span><b id="sizeValue">58px</b></label>
-    <input id="controlSize" type="range" min="42" max="90" value="58">
-   </div>
-   <div class="control-setting">
-    <label><span>Button transparency</span><b id="opacityValue">85%</b></label>
-    <input id="controlOpacity" type="range" min="20" max="100" value="85">
-   </div>
-   <div class="control-setting">
-    <label><span>Hide mobile controls on PC / Laptop</span><input id="hidePcControls" type="checkbox"></label>
-    <div style="font-size:11px;color:#918ba7">This setting only hides the on-screen buttons on desktop devices. Mobile devices will keep their controls.</div>
-   </div>
-   <div class="control-setting">
-    <button class="btn primary" id="customizeControlsBtn" style="width:100%">CUSTOMIZE MOBILE BUTTONS</button>
-    <div id="customizeHint">Turn this on, then drag each button wherever you want. Press DONE when finished. Your layout will be saved.</div>
+<section class="screen" id="settings">
+ <div class="panel-card" style="max-width:560px">
+  <div class="panel-head"><h2>SETTINGS</h2><button class="close-btn" onclick="goHome()">BACK</button></div>
+  <div class="tabs">
+   <button class="tab active" id="tabBtn-sound" onclick="setTab('sound')">&#9835; SOUND</button>
+   <button class="tab" id="tabBtn-controls" onclick="setTab('controls')">&#9881; CONTROLS</button>
+  </div>
+  <div class="tab-pane active" id="tab-sound">
+   <div class="vol-row"><label><span>MUSIC VOLUME</span><b id="musicVal">60%</b></label><input id="musicVol" type="range" min="0" max="100" value="60"></div>
+   <div class="vol-row"><label><span>SOUND EFFECTS</span><b id="sfxVal">80%</b></label><input id="sfxVol" type="range" min="0" max="100" value="80"></div>
+   <div class="redeem-hint" style="border:0;padding:0;margin-top:4px">MUSIC PLAYS IN THE LOBBY ONLY. SET A SLIDER TO 0 TO MUTE.</div>
+  </div>
+  <div class="tab-pane" id="tab-controls">
+   <p style="color:#aaa1bf;font-size:13px;line-height:1.7;margin-top:0">PC / Laptop: <b>D</b> = Right, <b>A</b> = Left, <b>F</b> = Fire, <b>SPACE</b> = Jump. You can remap these keys below.</p>
+   <div id="keyList"></div>
+   <div id="controlsOptions">
+    <div class="control-setting">
+     <button class="btn primary" style="width:100%" onclick="openControlEditor()">CUSTOMIZE MOBILE BUTTONS</button>
+     <div id="customizeHint">Move every button anywhere you want and set each button's size and transparency. Your layout is saved.</div>
+    </div>
+    <div class="control-setting">
+     <label><span>Hide mobile controls on PC / Laptop</span><input id="hidePcControls" type="checkbox"></label>
+     <div style="font-size:11px;color:#918ba7">This setting only hides the on-screen buttons on desktop devices. Mobile devices will keep their controls.</div>
+    </div>
    </div>
   </div>
+ </div>
+</section>
+
+<section class="screen" id="controlEditor">
+ <div class="ce-stage">
+  <button class="control-btn ce-btn" id="ce_left" aria-label="Move left"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="control-btn ce-btn" id="ce_right" aria-label="Move right"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="control-btn ce-btn" id="ce_jump" aria-label="Jump"><svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="control-btn ce-btn" id="ce_attack" aria-label="Attack"><svg viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><path d="M12 1.2L14.4 5V14H9.6V5Z" fill="currentColor"/><path d="M12 3.2V13" stroke="#fff" stroke-opacity=".55" stroke-width=".9" stroke-linecap="round"/><rect x="6.2" y="14" width="11.6" height="2.2" rx="1.1" fill="currentColor"/><rect x="10.9" y="16.2" width="2.2" height="4.2" fill="currentColor"/><circle cx="12" cy="21.4" r="1.5" fill="currentColor"/></g></svg></button>
+ </div>
+ <div class="ce-top">
+  <div class="ce-title">CUSTOMIZE BUTTONS</div>
+  <div style="display:flex;gap:8px"><button class="close-btn" onclick="resetControlLayout()">RESET</button><button class="btn primary" style="padding:9px 20px" onclick="closeControlEditor()">DONE</button></div>
+ </div>
+ <div class="ce-hint">DRAG A BUTTON TO MOVE IT &bull; TAP A BUTTON TO EDIT IT</div>
+ <div class="ce-panel">
+  <div class="ce-name" id="ceName">MOVE LEFT</div>
+  <div class="ce-row"><label><span>SIZE</span><b id="ceSizeVal">58px</b></label><input id="ceSize" type="range" min="36" max="110" value="58"></div>
+  <div class="ce-row"><label><span>TRANSPARENCY</span><b id="ceOpacityVal">15%</b></label><input id="ceOpacity" type="range" min="0" max="85" value="15"></div>
  </div>
 </section>
 
@@ -404,15 +516,22 @@ const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d",{alpha:false});
 const $=id=>document.getElementById(id);
 
-let W=innerWidth,H=innerHeight;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const num=(v,d)=>{v=Number(v);return isNaN(v)?d:v};
+// Fixed logical height (600) scaled to the real screen: same view on phones, tablets, laptops and big monitors.
+let W=800,H=600,VSCALE=1;
 function resize(){
- W=innerWidth;H=innerHeight;
+ const wrap=document.getElementById("gameWrap");
+ const pw=(wrap&&wrap.clientWidth)||innerWidth,ph=(wrap&&wrap.clientHeight)||innerHeight;
  const dpr=Math.min(devicePixelRatio||1,1.5);
- canvas.width=W*dpr;
- canvas.height=H*dpr;
- ctx.setTransform(dpr,0,0,dpr,0,0);
+ VSCALE=ph/600;W=pw/VSCALE;H=600;
+ canvas.width=Math.round(pw*dpr);canvas.height=Math.round(ph*dpr);
+ ctx.setTransform(dpr*VSCALE,0,0,dpr*VSCALE,0,0);
 }
-addEventListener("resize",resize);resize();
+addEventListener("resize",resize);
+addEventListener("orientationchange",()=>setTimeout(resize,150));
+if(window.visualViewport)window.visualViewport.addEventListener("resize",resize);
+resize();
 addEventListener("resize",()=>{if(running)showMobileControls()});
 
 // Prices end in 99 (Classic stays free). rarity labels use each skin's own color.
@@ -458,15 +577,59 @@ function updateHome(){
  $("homeShards").textContent=data.shards.toLocaleString();
  $("homeBest").textContent=data.best.toLocaleString();
  $("homeMascot").innerHTML=slimeSVG(getSkin(),"home");
+ $("chipAvatar").innerHTML=slimeSVG(getSkin(),"chip");
 }
+// ===== Audio: put jump.mp3, attack.mp3, button.mp3, enemydead.mp3 and runshardex.wav next to this file =====
+let audioSet={music:60,sfx:80};
+try{const a=JSON.parse(localStorage.getItem("runShardexAudio")||"null");if(a){audioSet.music=clamp(num(a.music,60),0,100);audioSet.sfx=clamp(num(a.sfx,80),0,100)}}catch(e){}
+const hasAudio=typeof Audio!=="undefined";
+const music=hasAudio?new Audio("runshardex.wav"):null;
+if(music){music.loop=true;music.preload="auto"}
+const SFX_FILES={jump:["jump.mp3",3],attack:["attack.mp3",3],button:["button.mp3",2],dead:["enemydead.mp3",3]};
+const sfxPool={};
+if(hasAudio)for(const k in SFX_FILES){const f=SFX_FILES[k][0],n=SFX_FILES[k][1];sfxPool[k]={i:0,list:Array.from({length:n},()=>{const a=new Audio(f);a.preload="auto";return a})}}
+let audioUnlocked=false,wantMusic=true;
+function applyAudio(){if(music)music.volume=audioSet.music/100}
+function saveAudio(){try{localStorage.setItem("runShardexAudio",JSON.stringify(audioSet))}catch(e){}}
+function playSfx(name){
+ const p=sfxPool[name];if(!p||audioSet.sfx<=0)return;
+ const a=p.list[p.i];p.i=(p.i+1)%p.list.length;
+ a.volume=audioSet.sfx/100;
+ try{a.currentTime=0}catch(e){}
+ const r=a.play();if(r&&r.catch)r.catch(()=>{});
+}
+function setMusic(on){
+ wantMusic=on;if(!music)return;
+ if(on&&audioUnlocked&&audioSet.music>0){const r=music.play();if(r&&r.catch)r.catch(()=>{})}else music.pause();
+}
+function unlockAudio(){if(audioUnlocked)return;audioUnlocked=true;if(wantMusic)setMusic(true)}
+["pointerdown","keydown","touchstart"].forEach(ev=>addEventListener(ev,unlockAudio,{capture:true}));
+document.addEventListener("visibilitychange",()=>{if(document.hidden){if(music)music.pause()}else if(wantMusic)setMusic(true)});
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("button");if(b&&!b.classList.contains("control-btn"))playSfx("button")});
+function syncAudioUI(){
+ $("musicVol").value=audioSet.music;$("sfxVol").value=audioSet.sfx;
+ $("musicVal").textContent=audioSet.music+"%";$("sfxVal").textContent=audioSet.sfx+"%";
+}
+$("musicVol").addEventListener("input",e=>{audioSet.music=Number(e.target.value);applyAudio();setMusic(wantMusic);saveAudio();syncAudioUI()});
+$("sfxVol").addEventListener("input",e=>{audioSet.sfx=Number(e.target.value);saveAudio();syncAudioUI()});
+$("sfxVol").addEventListener("change",()=>playSfx("button"));
+applyAudio();syncAudioUI();
+
+const LOBBY_SCREENS=["home","skins","seasons","settings","redeem","controlEditor"];
 function showScreen(id){
- customizingControls=false;
- $("mobileControls").classList.remove("customizing");
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
  $(id).classList.add("active");
  $("hud").style.display="none";
  $("shardHud").style.display="none";
  $("mobileControls").style.display="none";
+ document.body.classList.remove("playing");
+ setMusic(LOBBY_SCREENS.includes(id));
+}
+function setTab(name){
+ ["sound","controls"].forEach(t=>{
+  $("tab-"+t).classList.toggle("active",t===name);
+  $("tabBtn-"+t).classList.toggle("active",t===name);
+ });
 }
 function goHome(){
  running=false;
@@ -477,7 +640,7 @@ function openPanel(id){
  showScreen(id);
  if(id==="skins")renderSkins();
  if(id==="seasons")renderSeasons();
- if(id==="controls")renderKeys();
+ if(id==="settings"){renderKeys();syncAudioUI();applyControlSettings()}
  if(id==="redeem"){
   $("redeemInput").value="";
   $("redeemMessage").textContent="";
@@ -489,62 +652,87 @@ function toast(msg){
  toast.timer=setTimeout(()=>$("toast").style.display="none",1800);
 }
 
-// Mobile control settings are saved separately so you can edit them any time.
-const defaultControlLayout={
- left:{x:8,y:83}, right:{x:18,y:83},
- jump:{x:81,y:83}, attack:{x:92,y:83}
-};
-let controlSettings={size:58,opacity:85,hideOnPC:false,layout:{...defaultControlLayout}};
+// ===== Mobile controls: every button has its own position, size and transparency =====
+const CTRL_KEYS=["left","right","jump","attack"];
+const CTRL_IDS={left:"leftBtn",right:"rightBtn",jump:"jumpBtn",attack:"attackBtn"};
+const CTRL_NAMES={left:"MOVE LEFT",right:"MOVE RIGHT",jump:"JUMP",attack:"ATTACK"};
+const defaultControlLayout={left:{x:8,y:83},right:{x:18,y:83},jump:{x:81,y:83},attack:{x:92,y:83}};
+const cloneLayout=()=>JSON.parse(JSON.stringify(defaultControlLayout));
+function defaultBtn(){const o={};CTRL_KEYS.forEach(k=>o[k]={size:58,opacity:85});return o}
+let controlSettings={hideOnPC:false,layout:cloneLayout(),btn:defaultBtn()};
 try{
  const saved=JSON.parse(localStorage.getItem("runShardexControls")||"null");
- if(saved)controlSettings={...controlSettings,...saved,layout:{...defaultControlLayout,...(saved.layout||{})}};
- Object.keys(defaultControlLayout).forEach(k=>{
-  const pos=controlSettings.layout[k]||defaultControlLayout[k];
-  pos.x=Math.max(3,Math.min(97,Number(pos.x)||defaultControlLayout[k].x));
-  pos.y=Math.max(5,Math.min(95,Number(pos.y)||defaultControlLayout[k].y));
-  controlSettings.layout[k]=pos;
- });
+ if(saved){
+  controlSettings.hideOnPC=!!saved.hideOnPC;
+  CTRL_KEYS.forEach(k=>{
+   const pos=(saved.layout&&saved.layout[k])||defaultControlLayout[k];
+   controlSettings.layout[k]={x:clamp(num(pos.x,defaultControlLayout[k].x),3,97),y:clamp(num(pos.y,defaultControlLayout[k].y),5,95)};
+   const b=(saved.btn&&saved.btn[k])||{};
+   controlSettings.btn[k]={size:clamp(num(b.size,num(saved.size,58)),36,110),opacity:clamp(num(b.opacity,num(saved.opacity,85)),15,100)};
+  });
+ }
 }catch(e){}
-let customizingControls=false;
-let draggingControl=null;
 
 function isPCDevice(){
  return window.matchMedia("(pointer:fine)").matches && window.innerWidth>700;
 }
+function styleCtrl(el,k){
+ const b=controlSettings.btn[k],pos=controlSettings.layout[k];
+ el.style.width=b.size+"px";el.style.height=b.size+"px";
+ el.style.opacity=b.opacity/100;
+ el.style.left=pos.x+"%";el.style.top=pos.y+"%";
+}
 function applyControlSettings(){
- const wrap=$("mobileControls");
- wrap.classList.toggle("customizing",customizingControls);
- document.querySelectorAll(".control-btn").forEach(btn=>{
-  btn.style.width=controlSettings.size+"px";
-  btn.style.height=controlSettings.size+"px";
-  btn.style.opacity=controlSettings.opacity/100;
+ CTRL_KEYS.forEach(k=>{
+  styleCtrl($(CTRL_IDS[k]),k);
+  const ce=$("ce_"+k);
+  if(ce){styleCtrl(ce,k);ce.style.opacity=Math.max(.4,controlSettings.btn[k].opacity/100)}
  });
- Object.entries({left:"leftBtn",right:"rightBtn",jump:"jumpBtn",attack:"attackBtn"}).forEach(([key,id])=>{
-  const pos=controlSettings.layout[key]||defaultControlLayout[key];
-  const el=$(id);el.style.left=pos.x+"%";el.style.top=pos.y+"%";
- });
- if($("controlSize"))$("controlSize").value=controlSettings.size;
- if($("controlOpacity"))$("controlOpacity").value=controlSettings.opacity;
- if($("sizeValue"))$("sizeValue").textContent=controlSettings.size+"px";
- if($("opacityValue"))$("opacityValue").textContent=controlSettings.opacity+"%";
  if($("hidePcControls"))$("hidePcControls").checked=!!controlSettings.hideOnPC;
 }
 function saveControlSettings(){
- localStorage.setItem("runShardexControls",JSON.stringify(controlSettings));
+ try{localStorage.setItem("runShardexControls",JSON.stringify(controlSettings))}catch(e){}
  applyControlSettings();
 }
 function showMobileControls(){
  if(!running){$("mobileControls").style.display="none";return}
  $("mobileControls").style.display=(isPCDevice()&&controlSettings.hideOnPC)?"none":"block";
 }
-function setControlPosition(key,clientX,clientY){
- const rect=$("gameWrap").getBoundingClientRect();
- controlSettings.layout[key]={
-  x:Math.max(3,Math.min(97,((clientX-rect.left)/rect.width)*100)),
-  y:Math.max(5,Math.min(95,((clientY-rect.top)/rect.height)*100))
- };
+// --- full-screen button editor ---
+let ceSelected="left",ceDrag=null;
+function openControlEditor(){showScreen("controlEditor");applyControlSettings();ceSelect(ceSelected)}
+function closeControlEditor(){saveControlSettings();openPanel("settings");setTab("controls")}
+function ceSelect(k){
+ ceSelected=k;
+ CTRL_KEYS.forEach(x=>$("ce_"+x).classList.toggle("sel",x===k));
+ $("ceName").textContent=CTRL_NAMES[k];
+ const b=controlSettings.btn[k];
+ $("ceSize").value=b.size;$("ceSizeVal").textContent=b.size+"px";
+ $("ceOpacity").value=100-b.opacity;$("ceOpacityVal").textContent=(100-b.opacity)+"%";
+}
+function resetControlLayout(){
+ controlSettings.layout=cloneLayout();controlSettings.btn=defaultBtn();
+ saveControlSettings();ceSelect(ceSelected);
+}
+function ceMove(k,e){
+ const r=$("gameWrap").getBoundingClientRect();
+ controlSettings.layout[k]={x:clamp((e.clientX-r.left)/r.width*100,3,97),y:clamp((e.clientY-r.top)/r.height*100,5,95)};
  applyControlSettings();
 }
+CTRL_KEYS.forEach(k=>{
+ const el=$("ce_"+k);
+ el.addEventListener("pointerdown",e=>{e.preventDefault();ceSelect(k);ceDrag=k;try{el.setPointerCapture(e.pointerId)}catch(_){}ceMove(k,e)});
+ el.addEventListener("pointermove",e=>{if(ceDrag===k)ceMove(k,e)});
+ ["pointerup","pointercancel"].forEach(ev=>el.addEventListener(ev,()=>{if(ceDrag===k){ceDrag=null;saveControlSettings()}}));
+});
+$("ceSize").addEventListener("input",e=>{
+ controlSettings.btn[ceSelected].size=Number(e.target.value);
+ $("ceSizeVal").textContent=e.target.value+"px";saveControlSettings();
+});
+$("ceOpacity").addEventListener("input",e=>{
+ controlSettings.btn[ceSelected].opacity=100-Number(e.target.value);
+ $("ceOpacityVal").textContent=e.target.value+"%";saveControlSettings();
+});
 
 function renderSkins(){
  $("skinList").innerHTML="";
@@ -696,7 +884,6 @@ function renderKeys(){
   $("keyList").appendChild(row);
  });
  applyControlSettings();
- $("customizeControlsBtn").textContent=customizingControls?"DONE CUSTOMIZING":"CUSTOMIZE MOBILE BUTTONS";
 }
 
 const input={left:false,right:false};
@@ -744,52 +931,20 @@ function bindMobileButton(id,action){
  const el=$(id);
  el.addEventListener("pointerdown",e=>{
   e.preventDefault();
-  if(customizingControls){
-   draggingControl=id.replace("Btn","");
-   el.setPointerCapture(e.pointerId);
-   setControlPosition(draggingControl,e.clientX,e.clientY);
-   return;
-  }
   if(action==="left"||action==="right")input[action]=true;
   if(action==="jump")jump();
   if(action==="attack")attack();
  });
- el.addEventListener("pointermove",e=>{
-  if(customizingControls&&draggingControl===id.replace("Btn","")&&(e.buttons||e.pressure>0)){
-   setControlPosition(draggingControl,e.clientX,e.clientY);
-  }
- });
  ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>el.addEventListener(ev,()=>{
   if(action==="left"||action==="right")input[action]=false;
-  if(draggingControl===id.replace("Btn",""))draggingControl=null;
  }));
 }
 bindMobileButton("leftBtn","left");bindMobileButton("rightBtn","right");
 bindMobileButton("jumpBtn","jump");bindMobileButton("attackBtn","attack");
 
-$("controlSize").addEventListener("input",e=>{
- controlSettings.size=Number(e.target.value);saveControlSettings();
-});
-$("controlOpacity").addEventListener("input",e=>{
- controlSettings.opacity=Number(e.target.value);saveControlSettings();
-});
 $("hidePcControls").addEventListener("change",e=>{
  controlSettings.hideOnPC=e.target.checked;saveControlSettings();
  if(running)showMobileControls();
-});
-$("customizeControlsBtn").addEventListener("click",()=>{
- customizingControls=!customizingControls;
- $("customizeControlsBtn").textContent=customizingControls?"DONE CUSTOMIZING":"CUSTOMIZE MOBILE BUTTONS";
- $("customizeHint").textContent=customizingControls
-  ?"Drag each on-screen button to your preferred position, then press DONE CUSTOMIZING.":"Turn this on, then drag each button wherever you want. Press DONE when finished. Your layout will be saved.";
- $("mobileControls").classList.toggle("customizing",customizingControls);
- if(customizingControls){
-  $("mobileControls").style.display="block";
-  toast("Drag the buttons to move them");
- }else{
-  saveControlSettings();
-  showMobileControls();
- }
 });
 
 function platformColor(){return data.season==="rainbow"?`hsl(${(frame*1.2)%360},90%,60%)`:(seasons.find(s=>s.id===data.season)?.platform||"#51347d")}
@@ -805,6 +960,7 @@ function startGame(){
  running=false;
  input.left=false;input.right=false;
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ setMusic(false);document.body.classList.add("playing");
 
  score=0;distance=0;runShardCount=0;camera=0;frame=0;
  attackTimer=0;oneHit=0;shield=0;
@@ -1016,11 +1172,11 @@ function drawEnemy(e){
 }
 
 function jump(){
- if(running&&player.grounded){player.vy=-10.5;player.grounded=false;landSquash=0;puff(skinColor(getSkin()),6,1.8)}
+ if(running&&player.grounded){player.vy=-10.5;player.grounded=false;landSquash=0;puff(skinColor(getSkin()),6,1.8);playSfx("jump")}
 }
 function attack(){
  if(!running||attackTimer>0)return;
- attackTimer=18;
+ attackTimer=18;playSfx("attack");
  const skin=[...defaultSkins,...getCustomSkins()].find(s=>s.id===data.selected)||defaultSkins[0];
  const azure=data.selected==="secretblue";
  lasers.push({
@@ -1100,7 +1256,7 @@ function update(){
      vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4,
      color:l.color,life:18
     });
-    if(e.hp<=0){e.alive=false;score+=100;rewardEnemyShards(e)}
+    if(e.hp<=0){e.alive=false;score+=100;rewardEnemyShards(e);playSfx("dead")}
    }
   }
  }
@@ -1514,6 +1670,7 @@ function draw(){
 
 function loop(now){
  if(!running)return;
+ if(innerHeight>innerWidth&&innerWidth<900){lastTime=now;accumulator=0;rafId=requestAnimationFrame(loop);return}
  const delta=Math.min(100,now-lastTime);
  lastTime=now;accumulator+=delta;
  while(accumulator>=STEP){
