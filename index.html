@@ -423,7 +423,7 @@ const defaultSkins=[
  {id:"red",name:"Lava",color:"#ff6a1a",laser:"#ff8a2a",price:1999,rarity:"EPIC"},
  {id:"gold",name:"Golden",color:"#ffc84a",laser:"#ffe36b",price:2999,rarity:"LEGENDARY"},
  {id:"amethyst",name:"Amethyst",color:"#bd79ff",laser:"#dc9bff",price:4999,rarity:"MYTHIC"},
- {id:"secretblue",name:"Azure",color:"#168dff",laser:"#27baff",price:0,secret:true,rarity:"CELESTIAL"},
+ {id:"secretblue",name:"Bably",color:"#168dff",laser:"#27baff",price:0,secret:true,rarity:"CELESTIAL"},
  {id:"rainbow",name:"Rainbow",color:"#ff5ad6",laser:"#ffffff",price:0,secret:true,rarity:"DIVINE",rainbow:true}
 ];
 // ADD YOUR OWN REDEEM SKIN HERE:
@@ -435,8 +435,8 @@ const CUSTOM_SKIN_CODES = [
 
 const seasons=[
  {id:"purple",name:"Shadow Season",price:0,bg:"#100b20",platform:"#51347d",rarity:"COMMON",color:"#a45bff"},
- {id:"red",name:"Crimson Season",price:1499,bg:"#200c19",platform:"#87334d",rarity:"RARE",color:"#ff4d66"},
- {id:"ice",name:"Frozen Season",price:2999,bg:"#0a1a2a",platform:"#397b9e",rarity:"EPIC",color:"#4cc9ff"},
+ {id:"ice",name:"Frozen Season",price:2999,bg:"#0a1a2a",platform:"#397b9e",rarity:"RARE",color:"#4cc9ff"},
+ {id:"red",name:"Lava Season",price:1499,bg:"#200c19",platform:"#87334d",rarity:"EPIC",color:"#ff4d66"},
  {id:"amethyst",name:"Amethyst Season",price:4999,bg:"#170b29",platform:"#7942a8",rarity:"CELESTIAL",color:"#d28cff"},
  {id:"rainbow",name:"Rainbow Season",price:29999,bg:"#120a22",platform:"#ff5ad6",rarity:"DIVINE",color:"#ff5ad6",rainbow:true,limited:true}
 ];
@@ -643,7 +643,7 @@ function _redeemCode(){
   data.redeemedCodes.push(code);
   save();
   message.textContent="Azure skin unlocked successfully!";
-  toast("Azure unlocked!");
+  toast("Bably unlocked!");
   showSkinReward(defaultSkins.find(s=>s.id==="secretblue"));
  }else if(code==="RainbowShardex"){
   if(!data.owned.includes("rainbow"))data.owned.push("rainbow");
