@@ -1192,7 +1192,7 @@ try{const a=JSON.parse(localStorage.getItem("runShardexAudio")||"null");if(a){au
 const hasAudio=typeof Audio!=="undefined";
 const music=hasAudio?new Audio("runshardex.wav"):null;
 if(music){music.loop=true;music.preload="auto"}
-const SFX_FILES={jump:["jump.mp3",3],attack:["attack.mp3",3],button:["button.mp3",2],dead:["enemydead.mp3",3],giant:["giant.mp3",2]};
+const SFX_FILES={jump:["jump.mp3",3],attack:["attack.mp3",3],button:["button.mp3",2],dead:["enemykilled.mp3",3],giant:["giant.mp3",2]};
 const sfxPool={};
 if(hasAudio)for(const k in SFX_FILES){const f=SFX_FILES[k][0],n=SFX_FILES[k][1];sfxPool[k]={i:0,list:Array.from({length:n},()=>{const a=new Audio(f);a.preload="auto";return a})}}
 let audioUnlocked=false,wantMusic=true;
@@ -1476,7 +1476,7 @@ function _redeemCode(){
   if(!data.owned.includes("secretblue"))data.owned.push("secretblue");
   data.redeemedCodes.push(code);
   save();
-  message.textContent="Azure skin unlocked successfully!";
+  message.textContent="Bably skin unlocked successfully!";
   toast("Bably unlocked!");
   showSkinReward(defaultSkins.find(s=>s.id==="secretblue"));
  }else if(code==="RainbowShardex"){
